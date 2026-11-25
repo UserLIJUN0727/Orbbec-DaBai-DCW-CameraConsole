@@ -1,0 +1,11 @@
+numpy==2.2.6
+opencv-contrib-python==5.1.0.95
+Pillow==12.2.0
+PyYAML==6.0.3
+ultralytics==8.4.96
+torch==2.13.0
+onnxruntime==1.23.2
+rapidocr-onnxruntime==1.4.4
+mediapipe==1.2.3
+qrcode==8.2
+pyzbar==0.1.9

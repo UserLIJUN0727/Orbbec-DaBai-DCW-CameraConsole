@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USB 相机控制台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ 顶部状态栏 ============ -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">CV</div>
+      <div>
+        <h1>USB 相机控制台</h1>
+        <div class="sub">MJPEG · localhost</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="led" id="ledRec" style="display:none">
+      <span class="dot"></span><span id="ledRecText">REC</span>
+    </div>
+    <div class="led" id="led"><span class="dot"></span><span id="ledText">IDLE</span></div>
+  </div>
+
+  <div class="workspace">
+  <main class="overview" aria-label="相机工作区">
+  <section class="overview-visual" aria-label="实时视频">
+  <!-- ============ 视频舞台 ============ -->
+  <div class="stage" id="stage">
+    <div class="grid"></div>
+    <img id="stream" src="/stream" alt="实时画面">
+    <div class="bracket tl"></div>
+    <div class="bracket tr"></div>
+    <div class="bracket bl"></div>
+    <div class="bracket br"></div>
+    <div class="cross"></div>
+    <div class="rec-badge" id="recBadge"><span class="rdot"></span>LIVE</div>
+    <div class="rec-timer" id="recTimer">REC 00:00</div>
+    <div class="placeholder">
+      <div class="ring">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <div class="tip">点击下方 RUN 启动相机</div>
+    </div>
+  </div>
+
+  </section>
+  <aside class="overview-side" aria-label="相机控制与状态">
+  <!-- ============ 控制条 ============ -->
+  <div class="controls">
+    <button class="btn btn-run" id="btnRun">
+      <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+      <span id="runText">RUN 运行</span>
+    </button>
+    <div class="sep"></div>
+
+    <button class="btn btn-rec" id="btnRec">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg>
+      <span id="recText">开始录像</span>
+    </button>
+
+    <button class="btn" id="btnSnap">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>
+      拍照
+    </button>
+    <button class="btn" id="btnFull">
+      <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      全屏
+    </button>
+    <div class="sep"></div>
+    <button class="btn" id="btnFiles">
+      <svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/><path d="M3 7V5h6l2 2"/></svg>
+      文件管理
+    </button>
+    <div class="spacer"></div>
+    <button class="btn" id="btnRefresh">
+      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 3v6h-6"/></svg>
+      刷新状态
+    </button>
+    <div class="control-shortcuts">快捷键：Space 运行/停止 · R 录像 · S 截图 · F 全屏</div>
+  </div>
+
+  <!-- ============ 遥测 ============ -->
+  <div class="telemetry">
+    <div class="tele"><div class="k">Status</div><div class="v" id="tStatus">IDLE</div></div>
+    <div class="tele"><div class="k">Camera Idx</div><div class="v" id="tIndex">—</div></div>
+    <div class="tele"><div class="k">Resolution</div><div class="v" id="tRes">—</div></div>
+    <div class="tele"><div class="k">FPS</div><div class="v" id="tFps">—</div></div>
+    <div class="tele"><div class="k">Frames</div><div class="v" id="tFrames">—</div></div>
+    <div class="tele"><div class="k">Uptime</div><div class="v" id="tUptime">—</div></div>
+  </div>
+  </aside>
+  </main>
+
+  <!-- ============ 功能区（分类标签页） ============ -->
+  <div class="panel-area">
+    <nav class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="identify" type="button">识别</button>
+      <button class="cat-tab" data-cat="depth" type="button">深度 / 测量</button>
+      <button class="cat-tab" data-cat="robot" type="button">机械臂</button>
+      <button class="cat-tab" data-cat="device" type="button">设备 / 工具</button>
+    </nav>
+
+  <!-- ============ 文件管理面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelFiles">
+    <div class="panel-head" id="panelFilesHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>文件管理</h2>
+      <span class="badge" id="fileCount">0</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="fileSync">—</span>
+    </div>
+    <div class="panel-body">
+      <div class="file-toolbar">
+        <div class="filter-tabs" id="filterTabs">
+          <div class="tab active" data-filter="all">全部</div>
+          <div class="tab" data-filter="image">截图</div>
+          <div class="tab" data-filter="video">录像</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn" id="btnReloadFiles" style="padding:8px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 3v6h-6"/></svg>
+          刷新列表
+        </button>
+      </div>
+      <div class="file-grid" id="fileGrid"></div>
+      <div class="file-empty" id="fileEmpty" style="display:none">暂无文件，拍照或录像后会出现在这里</div>
+    </div>
+  </div>
+
+  <!-- ============ 本机环境诊断（只读） ============ -->
+  <div class="panel" data-cat="device" id="panelDiagnostics">
+    <div class="panel-head" id="panelDiagnosticsHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>本机环境诊断</h2>
+      <span class="badge" id="diagBadge">未运行</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="diagSummary">只读检查 · 不启动摄像头</span>
+    </div>
+    <div class="panel-body">
+      <div class="diag-toolbar">
+        <span class="diag-privacy">检查 Python、OpenCV、识别依赖、H.264 与存储空间；不枚举 USB、不读取图像。导出包含本机路径与错误文本。</span>
+        <div class="spacer"></div>
+        <button class="btn btn-run" id="btnDiagnosticsRun" type="button">运行诊断</button>
+        <button class="btn" id="btnDiagnosticsExport" type="button" disabled>导出 JSON</button>
+      </div>
+      <div class="diag-grid" id="diagGrid" aria-live="polite">
+        <div class="det-empty">点击“运行诊断”查看本机软件与存储状态。</div>
+      </div>
+      <div class="diag-updated" id="diagUpdated"></div>
+    </div>
+  </div>
+
+  <!-- ============ 安全指令窗口 ============ -->
+  <div class="panel" data-cat="robot" id="panelConsole">
+    <div class="panel-head" id="panelConsoleHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>YOLO / 机械臂指令窗口</h2>
+      <span class="badge" data-state="warn">机械臂仿真</span>
+      <div class="spacer"></div>
+      <span class="file-count">白名单命令 · 不执行 Shell</span>
+    </div>
+    <div class="panel-body">
+      <div class="command-safety">机械臂当前仅支持虚拟演示，真实硬件发送通道关闭。接入实体设备前需要确认型号、控制器、通信协议、急停与安全范围。</div>
+      <div class="command-presets" aria-label="常用命令">
+        <button class="btn command-preset" data-command="help" type="button">帮助</button>
+        <button class="btn command-preset" data-command="yolo detect" type="button">YOLO 检测</button>
+        <button class="btn command-preset" data-command="robot status" type="button">机械臂状态</button>
+        <button class="btn command-preset" data-command="robot simulate home" type="button">模拟回零</button>
+      </div>
+      <form class="command-form" id="commandForm">
+        <label class="sr-only" for="commandInput">输入允许的指令</label>
+        <input id="commandInput" name="command" type="text" autocomplete="off" spellcheck="false" maxlength="160"
+               placeholder="例如：yolo detect fruit conf=0.45" aria-label="输入允许的指令">
+        <button class="btn btn-run" id="commandRun" type="submit">执行</button>
+      </form>
+      <pre class="command-output" id="commandOutput" aria-live="polite">输入 help 查看命令。YOLO 需要 RGB 相机已有画面；机械臂命令目前只操作虚拟状态。</pre>
+    </div>
+  </div>
+
+  <!-- ============ 机械臂视觉项目实训（仅仿真） ============ -->
+  <section class="panel robot-project-panel" data-cat="robot" id="panelRobotProjects" aria-labelledby="robotProjectsTitle">
+    <div class="robot-project-heading">
+      <div>
+        <div class="eyebrow">VISION → ROBOT · STAGES 01—04</div>
+        <h2 id="robotProjectsTitle">机械臂视觉项目实训</h2>
+        <p>按 1→2→3→4 学习视觉识别、分流规则、抓取点生成与深度测距。</p>
+      </div>
+      <span class="badge" data-state="warn">仿真模式 · 不驱动硬件</span>
+    </div>
+    <div class="robot-project-safety">抓取坐标采用未标定的画面映射，只用于演示。项目 4 只读取已开启的 Orbbec 深度管线，不会自动切换相机或中断当前 RGB/YOLO。</div>
+    <div class="robot-project-grid">
+      <article class="robot-project-card">
+        <div class="robot-project-stage">PROJECT 01</div>
+        <h3>YOLO 视觉分拣</h3>
+        <p>识别当前画面目标；苹果、香蕉、橙子分到 A/B/C，其它目标进入 OTHER。</p>
+        <div class="robot-project-meta">YOLOv8 · RGB 实时帧 · 料箱映射</div>
+        <button class="btn btn-run" type="button" data-robot-project="yolo-sort">运行仿真</button>
+        <pre class="robot-project-result" id="robotProjectResultYolo" aria-live="polite">等待运行</pre>
+      </article>
+      <article class="robot-project-card">
+        <div class="robot-project-stage">PROJECT 02</div>
+        <h3>颜色分拣工作站</h3>
+        <p>找出画面中最大的颜色区域；红色、绿色、蓝色映射到 A/B/C 料箱。</p>
+        <div class="robot-project-meta">HSV 分割 · 连通区域 · 面积优先</div>
+        <button class="btn btn-run" type="button" data-robot-project="color-sort">运行仿真</button>
+        <pre class="robot-project-result" id="robotProjectResultColor" aria-live="polite">等待运行</pre>
+      </article>
+      <article class="robot-project-card">
+        <div class="robot-project-stage">PROJECT 03</div>
+        <h3>二维码工单分流</h3>
+        <p>读取工单码后按目的地分流。测试码内容可用 <code>SORT:A</code>、<code>SORT:B</code>、<code>SORT:C</code>。</p>
+        <div class="robot-project-meta">二维码解码 · 白名单路由 · 未识别不动作</div>
+        <button class="btn btn-run" type="button" data-robot-project="qr-route">运行仿真</button>
+        <pre class="robot-project-result" id="robotProjectResultQr" aria-live="polite">等待运行</pre>
+      </article>
+      <article class="robot-project-card robot-project-card-depth">
+        <div class="robot-project-stage">PROJECT 04</div>
+        <h3>深度相机定点抓取</h3>
+        <p>读取 Orbbec 深度图中心距离并生成候选抓取点；XY 外参/手眼标定尚未配置。</p>
+        <div class="robot-project-meta">真实深度读数 · 需要先手动开启深度模式</div>
+        <button class="btn" type="button" data-robot-project="depth-pick">检查并仿真抓取点</button>
+        <pre class="robot-project-result" id="robotProjectResultDepth" aria-live="polite">等待深度管线</pre>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ 机械臂控制器面板（可折叠） ============ -->
+  <div class="panel" data-cat="robot" id="panelArm">
+    <div class="panel-head" id="panelArmHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>机械臂控制器</h2>
+      <span class="badge" id="armBadge">仿真</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="armSummary">关节 / 运动 / 比赛 · 默认仿真不驱动硬件</span>
+    </div>
+    <div class="panel-body">
+      <!-- 运动控制 -->
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnArmHome" style="padding:9px 16px;font-size:12px">回零</button>
+        <button class="btn" id="btnArmStop" style="padding:9px 16px;font-size:12px">停止</button>
+        <button class="btn" id="btnArmReset" style="padding:9px 16px;font-size:12px">复位</button>
+        <button class="btn" id="btnArmEmergency" style="padding:9px 16px;font-size:12px;color:var(--danger)">急停</button>
+        <div class="sep"></div>
+        <span class="k">XYZ(mm)</span>
+        <input class="in-num" type="number" id="armX" value="0">
+        <input class="in-num" type="number" id="armY" value="0">
+        <input class="in-num" type="number" id="armZ" value="0">
+        <button class="btn" id="btnArmMove" style="padding:9px 16px;font-size:12px">移动</button>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 关节控制 -->
+      <div class="col-title" style="margin-top:14px">关节控制 · 舵机角度 0~180°</div>
+      <div class="arm-joints">
+        <label class="slider-box"><span class="k">J1</span><input type="range" id="armJ1" min="0" max="180" value="90"><span class="val" id="armJ1Val">90</span></label>
+        <label class="slider-box"><span class="k">J2</span><input type="range" id="armJ2" min="0" max="180" value="90"><span class="val" id="armJ2Val">90</span></label>
+        <label class="slider-box"><span class="k">J3</span><input type="range" id="armJ3" min="0" max="180" value="90"><span class="val" id="armJ3Val">90</span></label>
+        <label class="slider-box"><span class="k">J4</span><input type="range" id="armJ4" min="0" max="180" value="90"><span class="val" id="armJ4Val">90</span></label>
+        <label class="slider-box"><span class="k">J5</span><input type="range" id="armJ5" min="0" max="180" value="90"><span class="val" id="armJ5Val">90</span></label>
+        <label class="slider-box"><span class="k">J6</span><input type="range" id="armJ6" min="0" max="180" value="90"><span class="val" id="armJ6Val">90</span></label>
+      </div>
+      <div class="color-toolbar">
+        <button class="btn" id="btnArmJoints" style="padding:9px 18px;font-size:12px">应用关节角度</button>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 比赛模式 -->
+      <div class="col-title" style="margin-top:14px">比赛模式 · 计时计分</div>
+      <div class="color-toolbar">
+        <label class="slider-box"><span class="k">任务</span>
+          <select class="sel" id="armTask">
+            <option value="pick">抓取赛</option>
+            <option value="sort">分拣赛</option>
+            <option value="stack">码垛赛</option>
+            <option value="race">循迹赛</option>
+          </select>
+        </label>
+        <button class="btn btn-run" id="btnMatchStart" style="padding:9px 18px;font-size:12px">开始比赛</button>
+        <button class="btn" id="btnMatchScore" style="padding:9px 16px;font-size:12px">计分 +1</button>
+        <button class="btn" id="btnMatchStop" style="padding:9px 16px;font-size:12px">结束比赛</button>
+        <div class="spacer"></div>
+      </div>
+      <div class="pick-box" id="armMatchState" style="min-height:80px">
+        <div class="det-empty">选择任务后点「开始比赛」计时计分</div>
+      </div>
+      <!-- AI 视觉引导自动分拣 -->
+      <div class="col-title" style="margin-top:14px">AI 视觉引导自动分拣 · 识别物体 → 3D 位置 + 抓取角度 → 机械臂分拣</div>
+      <div class="color-toolbar">
+        <select id="sortBy" class="gm-sel" style="max-width:170px">
+          <option value="color">按颜色分拣</option>
+          <option value="class">按目标类别分拣</option>
+        </select>
+        <span class="k">数量</span>
+        <input class="in-num" type="number" id="sortMax" value="3" min="1" max="6">
+        <button class="btn btn-run" id="btnAutoSort" style="padding:10px 20px;font-size:13px">启动自动分拣</button>
+        <div class="spacer"></div>
+      </div>
+      <div class="pick-box" id="sortReport" style="min-height:96px">
+        <div class="det-empty">把物体放入镜头（开深度模式可得真实 3D），点「启动自动分拣」</div>
+      </div>
+
+      <!-- 真实机械臂配置（默认关闭） -->
+      <div class="col-title" style="margin-top:14px">真实机械臂配置 · 默认关闭</div>
+      <div class="color-hint" style="border-color:rgba(240,180,41,.35);color:var(--warn)">
+        <svg viewBox="0 0 24 24" style="stroke:var(--warn)"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+        真实驱动需填写型号/串口/协议后<b style="margin:0 4px">显式启用</b>，否则仅仿真、绝不向硬件发送指令。
+      </div>
+      <div class="color-toolbar">
+        <input class="in-txt" type="text" id="armPort" placeholder="串口(COM3)">
+        <input class="in-txt" type="text" id="armModel" placeholder="型号">
+        <select class="sel" id="armProtocol">
+          <option value="pca9685">pca9685 舵机</option>
+          <option value="serial-ascii">serial-ascii</option>
+          <option value="grbl">grbl</option>
+        </select>
+        <label class="check-box"><input type="checkbox" id="armRealEnable"><span class="lbl">启用真实驱动</span></label>
+        <button class="btn" id="btnArmReal" style="padding:9px 16px;font-size:12px">应用配置</button>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 状态 -->
+      <div class="col-title" style="margin-top:14px">控制器状态</div>
+      <div class="pick-box" id="armState" style="min-height:80px">
+        <div class="det-empty">加载中…</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="tool-grid" aria-label="识别与设备工具">
+  <!-- ============ 颜色识别面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelColor">
+    <div class="panel-head" id="panelColorHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>颜色识别</h2>
+      <span class="badge" id="colorBadge">OFF</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="colorSummary">HSV 算法 · 无需数据集</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnColorDetect" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span id="colorDetectText">识别整幅画面</span>
+        </button>
+        <div class="sep"></div>
+        <label class="slider-box">
+          <span class="k">灵敏度</span>
+          <input type="range" id="sensSlider" min="0" max="100" value="60">
+          <span class="val" id="sensVal">60</span>
+        </label>
+        <label class="slider-box">
+          <span class="k">最小面积</span>
+          <input type="range" id="areaSlider" min="100" max="8000" step="100" value="600">
+          <span class="val" id="areaVal">600</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnColorSnap" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        点击视频画面任意位置 → 取色识别该点颜色 ｜ 点「识别整幅画面」→ 一次性检测所有颜色并显示标注图
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">整幅识别结果 <span id="colorCount">(未识别)</span></div>
+          <div class="det-list" id="detList">
+            <div class="det-empty">点击「识别整幅画面」开始</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">颜色统计（面积像素）</div>
+          <div class="stat-list" id="statList">
+            <div class="det-empty">暂无统计</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">点击取色结果</div>
+          <div class="pick-box" id="pickBox">
+            <div class="det-empty">点击视频画面取色</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 文字识别面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelOcr">
+    <div class="panel-head" id="panelOcrHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>文字识别</h2>
+      <span class="badge" id="ocrBadge">未识别</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="ocrSummary">字母 / 数字 / 中文 · 点击才识别</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnOcr" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg>
+          <span id="ocrBtnText">识别画面文字</span>
+        </button>
+        <div class="sep"></div>
+        <label class="check-box">
+          <input type="checkbox" id="ocrAlnumOnly">
+          <span class="lbl">只看字母 / 数字</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnOcrSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        点「识别画面文字」→ 识别当前帧的字母、数字、中文。首次调用需加载模型（约 3-5 秒），之后每次约 1 秒。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col" style="grid-column:1 / -1">
+          <div class="col-title">识别结果 <span id="ocrCount">(未识别)</span></div>
+          <div class="det-list" id="ocrList" style="max-height:260px">
+            <div class="det-empty">点击「识别画面文字」开始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 二维码识别面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelQr">
+    <div class="panel-head" id="panelQrHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>二维码识别</h2>
+      <span class="badge" id="qrBadge">未识别</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="qrSummary">QR 码 · 支持一图多码 · 点击才识别</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnQr" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3z"/></svg>
+          <span id="qrBtnText">识别二维码</span>
+        </button>
+        <div class="sep"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="btnQrSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        把二维码放到镜头前，点「识别二维码」。支持一图内多个码，自动判断类型（网址/文本/数字/WiFi）。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col" style="grid-column:1 / -1">
+          <div class="col-title">识别结果 <span id="qrCount">(未识别)</span></div>
+          <div class="det-list" id="qrList" style="max-height:220px">
+            <div class="det-empty">点击「识别二维码」开始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 条形码识别面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelBarcode">
+    <div class="panel-head" id="panelBarcodeHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>条形码识别</h2>
+      <span class="badge" id="barcodeBadge">未识别</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="barcodeSummary">EAN/UPC/Code128 · 商品条码 · 点击才识别</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnBarcode" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
+          <span id="barcodeBtnText">识别条形码</span>
+        </button>
+        <div class="sep"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="btnBarcodeSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        把商品条形码放到镜头前，点「识别条形码」。支持 EAN-8/13、UPC-A/E、Code39/128、ITF 等。
+      </div>
+      <div class="color-results">
+        <div class="color-col" style="grid-column:1 / -1">
+          <div class="col-title">识别结果 <span id="barcodeCount">(未识别)</span></div>
+          <div class="det-list" id="barcodeList" style="max-height:220px">
+            <div class="det-empty">点击「识别条形码」开始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 手势交互面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelGesture">
+    <div class="panel-head" id="panelGestureHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>手势交互</h2>
+      <span class="badge" id="gestureBadge">未识别</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="gestureSummary">MediaPipe · 手部 21 关键点 · 点击才识别</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnGesture" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v5m0-1V4.5a1.5 1.5 0 0 1 3 0V10m0-.5V6a1.5 1.5 0 0 1 3 0v7c0 4-2.5 7-6 7s-6-2.5-6-6v-3a1.5 1.5 0 0 1 3 0"/></svg>
+          <span id="gestureBtnText">识别手势</span>
+        </button>
+        <button class="btn" id="btnGestureControl" style="padding:10px 18px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          手势控制机械臂
+        </button>
+        <label class="check-box">
+          <input type="checkbox" id="gestureCont">
+          <span class="lbl">连续手势</span>
+        </label>
+        <select class="sel" id="gestureContMode">
+          <option value="watch">连续识别</option>
+          <option value="control">连续控制机械臂</option>
+          <option value="menu">手势菜单(手指选择)</option>
+          <option value="air">空中手势控制</option>
+        </select>
+        <div class="sep"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="btnGestureSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        手势→机械臂: <b style="margin:0 4px">张掌=回零 · 握拳=抓取(下降/比赛+1) · 拇指=比赛+1 · V/指向=停止</b>。
+        手势控制需机械臂先在下方控制器可用（默认仿真）。
+      </div>
+
+      <!-- 手势菜单: 手指数量选择功能, 握拳确认, OK 取消 -->
+      <div class="col-title" style="margin-top:14px">手势菜单 · 伸 1~5 指选功能 → 握拳确认执行 · OK 取消</div>
+      <div class="arm-joints" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+        <label class="slider-box"><span class="k">1 指</span>
+          <select id="gmMode1" class="gm-sel">
+            <option>颜色识别</option><option>文字识别</option><option>二维码</option>
+            <option>目标检测</option><option>机械臂控制</option>
+          </select></label>
+        <label class="slider-box"><span class="k">2 指</span>
+          <select id="gmMode2" class="gm-sel">
+            <option>颜色识别</option><option selected>文字识别</option><option>二维码</option>
+            <option>目标检测</option><option>机械臂控制</option>
+          </select></label>
+        <label class="slider-box"><span class="k">3 指</span>
+          <select id="gmMode3" class="gm-sel">
+            <option>颜色识别</option><option>文字识别</option><option selected>二维码</option>
+            <option>目标检测</option><option>机械臂控制</option>
+          </select></label>
+        <label class="slider-box"><span class="k">4 指</span>
+          <select id="gmMode4" class="gm-sel">
+            <option>颜色识别</option><option>文字识别</option><option>二维码</option>
+            <option selected>目标检测</option><option>机械臂控制</option>
+          </select></label>
+        <label class="slider-box"><span class="k">5 指</span>
+          <select id="gmMode5" class="gm-sel">
+            <option>颜色识别</option><option>文字识别</option><option>二维码</option>
+            <option>目标检测</option><option selected>机械臂控制</option>
+          </select></label>
+      </div>
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnGestureMenu" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          手势菜单(识别一次)
+        </button>
+        <div class="spacer"></div>
+      </div>
+      <div class="pick-box" id="gestureMenuState" style="min-height:96px">
+        <div class="det-empty">伸出 1~5 个手指选择功能 → 握拳确认执行 → OK 手势取消</div>
+      </div>
+      <!-- 空中手势控制 -->
+      <div class="col-title" style="margin-top:14px">空中手势控制 · 张掌监控 / 握拳截图 / 挥手切画面 / 手入 3D 区域触发</div>
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnAirToggle" style="padding:10px 20px;font-size:13px">启动空中手势</button>
+        <button class="btn" id="btnAirOnce" style="padding:10px 16px;font-size:12px">识别一次</button>
+        <div class="sep"></div>
+        <span class="k">区域触发动作</span>
+        <select id="airAction" class="gm-sel" style="max-width:170px">
+          <option value="match_score">比赛 +1</option>
+          <option value="arm_grasp">机械臂抓取</option>
+          <option value="arm_home">机械臂回零</option>
+          <option value="snapshot">截图</option>
+        </select>
+        <div class="spacer"></div>
+      </div>
+      <div class="color-toolbar">
+        <span class="k">3D 区域(mm)</span>
+        <span class="k">X</span>
+        <input class="in-num" type="number" id="airXmin" value="-150">
+        <input class="in-num" type="number" id="airXmax" value="150">
+        <span class="k">Y</span>
+        <input class="in-num" type="number" id="airYmin" value="-150">
+        <input class="in-num" type="number" id="airYmax" value="150">
+        <span class="k">Z</span>
+        <input class="in-num" type="number" id="airZmin" value="250">
+        <input class="in-num" type="number" id="airZmax" value="550">
+        <button class="btn" id="btnAirConfig" style="padding:8px 14px;font-size:12px">应用区域</button>
+        <div class="spacer"></div>
+      </div>
+      <div class="pick-box" id="airStatus" style="min-height:96px">
+        <div class="det-empty">张掌=启动监控 · 握拳=截图 · 左挥手=RGB / 右挥手=深度 · 手入 3D 区域=触发动作</div>
+      </div>
+      <div class="color-results">
+        <div class="color-col" style="grid-column:1 / -1">
+          <div class="col-title">识别结果 <span id="gestureCount">(未识别)</span></div>
+          <div class="det-list" id="gestureList" style="max-height:220px">
+            <div class="det-empty">点击「识别手势」开始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 目标检测 / 水果识别面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelYolo">
+    <div class="panel-head" id="panelYoloHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>目标检测 / 水果识别</h2>
+      <span class="badge" id="yoloBadge">未识别</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="yoloSummary">YOLOv8 · 默认 COCO 水果类：苹果/香蕉/橙子</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnYolo" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M9 5v14"/></svg>
+          <span id="yoloBtnText">识别目标</span>
+        </button>
+        <button class="btn" id="btnYoloLive" type="button">开启连续检测</button>
+        <label class="slider-box">
+          <span class="k">检测间隔</span>
+          <input type="range" id="yoloLiveInterval" min="1000" max="5000" step="500" value="1500">
+          <span class="val" id="yoloLiveIntervalVal">1.5 秒</span>
+        </label>
+        <div class="sep"></div>
+        <label class="check-box">
+          <input type="checkbox" id="yoloFruitOnly">
+          <span class="lbl">只看水果</span>
+        </label>
+        <label class="slider-box">
+          <span class="k">置信度</span>
+          <input type="range" id="yoloConfSlider" min="5" max="90" value="35">
+          <span class="val" id="yoloConfVal">0.35</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnYoloSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        置信度调低通常会提高召回、同时增加误检；默认 COCO 权重只含苹果/香蕉/橙子，自定义模型按其训练类别识别。点「识别目标」检测一帧；连续检测默认 1.5 秒且不并发。机械臂分拣前请先用实物验证误检率。
+      </div>
+
+      <div class="color-toolbar" style="margin-top:12px">
+        <span class="k">自定义水果模型</span>
+        <input class="in-txt" type="text" id="yoloModelPath" placeholder="自训练模型 .pt 路径（如 C:\models\fruit.pt）">
+        <button class="btn" id="btnYoloLoadModel" style="padding:9px 16px;font-size:12px">加载模型</button>
+        <span class="file-count" id="yoloModelName">当前: yolov8n (COCO 80类)</span>
+      </div>
+
+      <div class="yolo-live-preview" id="yoloLivePreview" aria-live="polite">
+        <div class="yolo-live-preview-title">连续检测 · 最近标注帧</div>
+        <img id="yoloLiveFrame" alt="YOLO 连续检测标注帧">
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">检测结果 <span id="yoloCount">(未识别)</span></div>
+          <div class="det-list" id="yoloList" style="max-height:240px">
+            <div class="det-empty">点击「识别目标」开始</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">数量统计</div>
+          <div class="stat-list" id="yoloStatList">
+            <div class="det-empty">暂无统计</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">说明</div>
+          <div class="pick-box" id="yoloNote">
+            <div class="row">模型: YOLOv8n (COCO 80 类)</div>
+            <div class="row">水果: 香蕉 / 苹果 / 橙子</div>
+            <div class="row">其它: 人/车/猫狗/手机/杯子…</div>
+            <div class="row" style="color:var(--warn)">更多水果需自备数据集微调</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 深度与测距面板（可折叠） ============ -->
+  <div class="panel" data-cat="depth" id="panelDepth">
+    <div class="panel-head" id="panelDepthHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>深度图 / 测距</h2>
+      <span class="badge" id="depthBadge">关闭</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="depthSummary">Orbbec DaBai DCW · 结构光测距</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnDepthToggle" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="depthToggleText">开启深度模式</span>
+        </button>
+        <div class="sep"></div>
+        <label class="check-box">
+          <input type="checkbox" id="depthAutoMeasure" checked>
+          <span class="lbl">点击画面测距</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnDepthSnap" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存深度图
+        </button>
+      </div>
+
+      <div class="color-hint" style="border-color:rgba(240,180,41,.35);color:var(--warn)">
+        <svg viewBox="0 0 24 24" style="stroke:var(--warn)"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+        深度模式需要<b style="margin:0 4px">USB3.0</b>接口（蓝色胶芯）。若相机插在 USB Hub / USB2.0 口，深度传感器无法启动。
+      </div>
+
+      <!-- 深度双窗口（彩色 + 深度，都可点击测距） -->
+      <div class="depth-view">
+        <div class="depth-view-head">
+          <div class="col-title" style="margin:0">深度双窗口 · 点击任一画面测距</div>
+          <div class="spacer"></div>
+          <span class="file-count" id="depthRatio">有效像素 —</span>
+        </div>
+        <div class="depth-dual">
+          <div class="depth-frame" id="depthColorWrap">
+            <img id="depthColorImg" src="/depth/color-frame" alt="彩色">
+            <div class="depth-cross" id="depthColorCross" style="display:none"></div>
+            <div class="depth-empty">彩色 (RGB)</div>
+          </div>
+          <div class="depth-frame" id="depthFrameWrap">
+            <img id="depthImg" src="/depth/frame" alt="深度图">
+            <div class="depth-cross" id="depthCross" style="display:none"></div>
+            <div class="depth-empty">深度 (JET)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">测距读数</div>
+          <div class="pick-box" id="depthReadout" style="min-height:120px">
+            <div class="det-empty">开启深度模式后，点击画面任意位置测距</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">深度图说明</div>
+          <div class="pick-box">
+            <div class="row"><span class="sw" style="background:#202060"></span> 深蓝 = 近 (0 mm)</div>
+            <div class="row"><span class="sw" style="background:#20a0c0"></span> 青绿 = 中距</div>
+            <div class="row"><span class="sw" style="background:#c0c020"></span> 黄 = 较远</div>
+            <div class="row"><span class="sw" style="background:#c02020"></span> 红 = 远 (4000 mm)</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">设备信息</div>
+          <div class="pick-box" id="depthInfo" style="min-height:120px">
+            <div class="det-empty">未连接</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">测距范围</div>
+          <div class="pick-box">
+            <div class="row">典型: 0.3 ~ 4 m（Orbbec DaBai DCW）</div>
+            <div class="row">精度: ±1%（近距离更准）</div>
+            <div class="row">原理: 结构光 / 主动红外</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 摄像头参数面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelCam">
+    <div class="panel-head" id="panelCamHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>摄像头参数</h2>
+      <span class="badge" id="camBadge">未探测</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="camSummary">分辨率 / 曝光 / 增益 等</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <label class="slider-box" style="min-width:220px">
+          <span class="k">分辨率</span>
+          <select class="sel" id="camRes">
+            <option value="640x480">640 × 480</option>
+            <option value="320x240">320 × 240</option>
+            <option value="640x360">640 × 360</option>
+            <option value="1280x720">1280 × 720</option>
+            <option value="1280x960">1280 × 960</option>
+            <option value="1440x1080">1440 × 1080</option>
+            <option value="1920x1080">1920 × 1080</option>
+          </select>
+        </label>
+        <div class="sep"></div>
+        <button class="btn btn-run" id="btnCamApply" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+          应用参数
+        </button>
+        <button class="btn" id="btnCamReset" style="padding:10px 18px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          恢复默认
+        </button>
+        <button class="btn" id="btnCamProbe" style="padding:10px 18px;font-size:12px">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          标定范围
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        滑块只对<b style="margin:0 4px">实际支持</b>的参数生效。不支持的已禁用并标注原因，不会伪装设置成功。
+      </div>
+
+      <div class="cam-grid" id="camGrid">
+        <div class="det-empty">加载中…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 运动检测 / 入侵报警面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelMotion">
+    <div class="panel-head" id="panelMotionHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>运动检测 / 入侵报警</h2>
+      <span class="badge" id="motionBadge">关闭</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="motionSummary">背景差分 · 纯算法</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnMotionToggle" style="padding:10px 24px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span id="motionToggleText">开始监测</span>
+        </button>
+        <div class="sep"></div>
+        <label class="slider-box">
+          <span class="k">灵敏度</span>
+          <input type="range" id="motionSens" min="0" max="100" value="50">
+          <span class="val" id="motionSensVal">50</span>
+        </label>
+        <label class="slider-box">
+          <span class="k">冷却时间</span>
+          <input type="range" id="motionCooldown" min="1" max="30" value="3">
+          <span class="val" id="motionCooldownVal">3s</span>
+        </label>
+        <label class="check-box">
+          <input type="checkbox" id="motionSave" checked>
+          <span class="lbl">报警时自动抓拍</span>
+        </label>
+        <label class="check-box">
+          <input type="checkbox" id="motionSmart" checked>
+          <span class="lbl">智能识别现场(颜色/文字)</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnMotionClear" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></svg>
+          清空日志
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        开启后持续监测画面变化。检测到运动自动抓拍 + 记录报警。灵敏度越高，越小的运动也报警。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">实时状态</div>
+          <div class="pick-box" id="motionLive" style="min-height:110px">
+            <div class="det-empty">未开启</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">运动量</div>
+          <div class="stat-row" style="border:none;padding:0">
+            <span class="bar" style="flex:1"><i id="motionBar" style="width:0%;background:var(--accent)"></i></span>
+            <span class="vv" id="motionLevel" style="min-width:48px">0%</span>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">报警日志 <span id="alarmCount">(0)</span></div>
+          <div class="det-list" id="alarmList" style="max-height:240px">
+            <div class="det-empty">暂无报警</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 测量工具面板（可折叠） ============ -->
+  <div class="panel" data-cat="depth" id="panelMeasure">
+    <div class="panel-head" id="panelMeasureHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>测量工具</h2>
+      <span class="badge" id="measureBadge">关闭</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="measureSummary">距离 / 角度 / 面积 · 配合深度测真实尺寸</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <div class="filter-tabs" id="measureMode">
+          <div class="tab active" data-mode="distance">距离</div>
+          <div class="tab" data-mode="angle">角度</div>
+          <div class="tab" data-mode="area">面积</div>
+        </div>
+        <div class="sep"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="btnMeasureClear" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></svg>
+          清空点位
+        </button>
+        <button class="btn" id="btnMeasureSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存截图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        点击视频画面放置点位：<b style="margin:0 4px">距离</b>点 2 下 ｜
+        <b style="margin:0 4px">角度</b>点 3 下（第 2 点是顶点）｜
+        <b style="margin:0 4px">面积</b>点 4 下以上（首尾自动闭合）。
+        开启深度模式后可显示真实尺寸（mm）。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">当前测量 <span id="measureModeLabel">距离</span></div>
+          <div class="pick-box" id="measureLive" style="min-height:130px">
+            <div class="det-empty">点击视频画面放置点位</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">点位列表</div>
+          <div class="det-list" id="measurePoints" style="max-height:160px">
+            <div class="det-empty">暂无点位</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">测量说明</div>
+          <div class="pick-box">
+            <div class="row"><b style="color:var(--accent)">距离</b>：两点间像素长度，深度模式下显示真实 mm</div>
+            <div class="row"><b style="color:var(--accent)">角度</b>：3 点定角，第 2 点为顶点</div>
+            <div class="row"><b style="color:var(--accent)">面积</b>：多边形面积（鞋带公式）</div>
+            <div class="row" style="margin-top:8px;color:var(--warn)">⚠ 真实尺寸需先开「深度模式」</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">最近测量</div>
+          <div class="det-list" id="measureHistory" style="max-height:180px">
+            <div class="det-empty">暂无记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Haar 目标检测面板（可折叠） ============ -->
+  <div class="panel" data-cat="identify" id="panelHaar">
+    <div class="panel-head" id="panelHaarHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>目标检测（人脸 / 猫脸 / 车牌 等）</h2>
+      <span class="badge" id="haarBadge">未检测</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="haarSummary">Haar 级联 · 10 种目标 · 点击才检测</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <div class="filter-tabs" id="haarTarget" style="flex-wrap:wrap">
+          <div class="tab active" data-target="face_front">人脸</div>
+          <div class="tab" data-target="face_alt">人脸(高精)</div>
+          <div class="tab" data-target="face_profile">侧脸</div>
+          <div class="tab" data-target="cat_face">猫脸</div>
+          <div class="tab" data-target="smile">微笑</div>
+          <div class="tab" data-target="eye">眼睛</div>
+          <div class="tab" data-target="plate">车牌</div>
+          <div class="tab" data-target="fullbody">全身</div>
+          <div class="tab" data-target="upperbody">上半身</div>
+          <div class="tab" data-target="lowerbody">下半身</div>
+        </div>
+        <div class="sep"></div>
+        <div class="spacer"></div>
+        <button class="btn btn-run" id="btnHaar" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span id="haarBtnText">检测</span>
+        </button>
+        <button class="btn" id="btnHaarSave" style="padding:9px 16px;font-size:12px">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+          保存标注图
+        </button>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        选择目标类型后点「检测」。人脸请<b style="margin:0 4px">正对镜头</b>、光线充足效果最好。
+        Haar 级联对侧脸、遮挡、暗光识别率会下降。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">检测结果 <span id="haarCount">(未检测)</span></div>
+          <div class="det-list" id="haarList" style="max-height:220px">
+            <div class="det-empty">点击「检测」开始</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">目标说明</div>
+          <div class="pick-box" id="haarInfo" style="min-height:120px">
+            <div class="row">基于 OpenCV Haar 级联分类器</div>
+            <div class="row">共 10 种目标，零数据集依赖</div>
+            <div class="row" style="color:var(--warn)">⚠ 检测框无置信度（Haar 算法限制）</div>
+          </div>
+          <div class="col-title" style="margin-top:14px">使用技巧</div>
+          <div class="pick-box">
+            <div class="row">· 人脸正对、光线充足、无遮挡</div>
+            <div class="row">· 侧脸用「侧脸」模式</div>
+            <div class="row">· 猫脸需正对猫脸</div>
+            <div class="row">· 车牌需清晰、正对</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 物体追踪面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelTrack">
+    <div class="panel-head" id="panelTrackHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>物体追踪</h2>
+      <span class="badge" id="trackBadge">待机</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="trackSummary">CSRT 算法 · 点击画面选目标</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnTrackStart" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="trackBtnText">点击画面选目标</span>
+        </button>
+        <button class="btn" id="btnTrackStop" style="padding:10px 18px;font-size:12px">
+          <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          停止追踪
+        </button>
+        <div class="sep"></div>
+        <label class="slider-box">
+          <span class="k">框大小</span>
+          <input type="range" id="trackSize" min="40" max="320" value="120">
+          <span class="val" id="trackSizeVal">120</span>
+        </label>
+        <div class="spacer"></div>
+      </div>
+
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        展开面板后<b style="margin:0 4px">点击视频画面</b>选择追踪目标（绿框）。
+        移动目标时框会自动跟随。目标丢失会自动停止。
+      </div>
+
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">追踪状态</div>
+          <div class="pick-box" id="trackLive" style="min-height:120px">
+            <div class="det-empty">待机 · 点击画面选目标</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">算法说明</div>
+          <div class="pick-box">
+            <div class="row">算法: CSRT (Discriminative Correlation Filter)</div>
+            <div class="row">特点: 精度高、抗形变、对遮挡稳健</div>
+            <div class="row">速度: 约 20 Hz，不影响视频流</div>
+            <div class="row" style="color:var(--warn)">⚠ 目标丢失后需重新选择</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 三维点云面板（可折叠） ============ -->
+  <div class="panel" data-cat="depth" id="panelPointCloud">
+    <div class="panel-head" id="panelPointCloudHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>三维点云</h2>
+      <span class="badge" id="pcBadge">待机</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="pcSummary">深度数据 3D 可视化 · 拖拽旋转</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnPcLoad" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          刷新点云
+        </button>
+        <div class="sep"></div>
+        <label class="slider-box">
+          <span class="k">采样</span>
+          <input type="range" id="pcStep" min="4" max="16" value="8">
+          <span class="val" id="pcStepVal">8</span>
+        </label>
+        <div class="spacer"></div>
+      </div>
+      <div class="pc-wrap">
+        <canvas id="pcCanvas" width="640" height="400"></canvas>
+      </div>
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        拖拽旋转 · 滚轮缩放 · 需先开<b style="margin:0 4px">深度模式</b>。点云由深度图反投影生成（近似内参）。
+      </div>
+      <div class="col-title" style="margin-top:12px">3D 空间测量 · 点击点云中的物体</div>
+      <div class="pick-box" id="pcReadout" style="min-height:96px">
+        <div class="det-empty">开深度模式 → 刷新点云 → 点击物体：测 空间坐标 / 长宽高 / 体积</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 图像增强面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelEnhance">
+    <div class="panel-head" id="panelEnhanceHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>图像增强</h2>
+      <span class="badge" id="enhanceBadge">关闭</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="enhanceSummary">锐化 / 去噪 / 直方图 / 边缘</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <label class="check-box">
+          <input type="checkbox" id="enhanceEnable">
+          <span class="lbl">启用图像增强</span>
+        </label>
+        <div class="sep"></div>
+        <label class="check-box">
+          <input type="checkbox" id="enhanceEqualize">
+          <span class="lbl">直方图均衡</span>
+        </label>
+        <label class="check-box">
+          <input type="checkbox" id="enhanceEdge">
+          <span class="lbl">边缘检测</span>
+        </label>
+        <div class="spacer"></div>
+      </div>
+      <div class="color-toolbar">
+        <label class="slider-box">
+          <span class="k">锐化</span>
+          <input type="range" id="enhanceSharpen" min="0" max="100" value="0">
+          <span class="val" id="enhanceSharpenVal">0</span>
+        </label>
+        <label class="slider-box">
+          <span class="k">去噪</span>
+          <input type="range" id="enhanceDenoise" min="0" max="100" value="0">
+          <span class="val" id="enhanceDenoiseVal">0</span>
+        </label>
+        <div class="spacer"></div>
+      </div>
+      <div class="color-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        增强作用于<b style="margin:0 4px">视频流 / 拍照</b>（所见即所得），录像仍保存原始画面。
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 定时抓拍面板（可折叠） ============ -->
+  <div class="panel" data-cat="device" id="panelTimelapse">
+    <div class="panel-head" id="panelTimelapseHead">
+      <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      <h2>定时抓拍</h2>
+      <span class="badge" id="timelapseBadge">待机</span>
+      <div class="spacer"></div>
+      <span class="file-count" id="timelapseSummary">按间隔自动保存快照</span>
+    </div>
+    <div class="panel-body">
+      <div class="color-toolbar">
+        <label class="slider-box">
+          <span class="k">间隔(秒)</span>
+          <input type="range" id="tlInterval" min="1" max="60" value="5">
+          <span class="val" id="tlIntervalVal">5</span>
+        </label>
+        <label class="slider-box">
+          <span class="k">数量(0无限)</span>
+          <input type="range" id="tlCount" min="0" max="100" value="0">
+          <span class="val" id="tlCountVal">0</span>
+        </label>
+        <div class="spacer"></div>
+      </div>
+      <div class="color-toolbar">
+        <button class="btn btn-run" id="btnTlStart" style="padding:10px 22px;font-size:13px">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          开始抓拍
+        </button>
+        <button class="btn" id="btnTlStop" style="padding:10px 18px;font-size:12px">
+          <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          停止
+        </button>
+        <div class="spacer"></div>
+      </div>
+      <div class="color-results">
+        <div class="color-col">
+          <div class="col-title">抓拍状态</div>
+          <div class="pick-box" id="tlStatus" style="min-height:90px">
+            <div class="det-empty">待机 · 设置间隔后点「开始抓拍」</div>
+          </div>
+        </div>
+        <div class="color-col">
+          <div class="col-title">说明</div>
+          <div class="pick-box">
+            <div class="row">快照保存到 captures/timelapse_*.jpg</div>
+            <div class="row">所见即所得（含图像增强）</div>
+            <div class="row">数量设 0 表示一直抓拍直到手动停止</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+  </div><!-- /panel-area -->
+  </div><!-- /workspace -->
+
+  <!-- ============ 页脚 ============ -->
+  <div class="foot">
+    <span id="footMsg">READY · 等待启动</span>
+    <span style="flex:1"></span>
+    <span>GET /stream · multipart/x-mixed-replace</span>
+  </div>
+
+</div>
+
+<!-- 图片/视频预览弹层 -->
+<div class="modal-mask" id="previewMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="previewTitle">预览</h3>
+      <button class="modal-close" id="previewClose">×</button>
+    </div>
+    <div class="modal-body" id="previewBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="previewDownload">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+        下载
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 标注图预览弹层 -->
+<div class="modal-mask" id="annotatedMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="annotatedTitle">识别结果</h3>
+      <button class="modal-close" id="annotatedClose">×</button>
+    </div>
+    <div class="modal-body">
+      <img id="annotatedImg" src="" alt="识别结果">
+      <div id="annotatedSummary" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="annotatedDownload">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+        保存标注图
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 文字标注图预览弹层 -->
+<div class="modal-mask" id="ocrMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="ocrModalTitle">文字识别结果</h3>
+      <button class="modal-close" id="ocrClose">×</button>
+    </div>
+    <div class="modal-body">
+      <img id="ocrImg" src="" alt="文字识别结果">
+      <div id="ocrModalSummary" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="ocrDownload">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+        保存标注图
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 二维码标注图预览弹层 -->
+<div class="modal-mask" id="qrMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="qrModalTitle">二维码识别结果</h3>
+      <button class="modal-close" id="qrClose">×</button>
+    </div>
+    <div class="modal-body">
+      <img id="qrImg" src="" alt="二维码识别结果">
+      <div id="qrModalSummary" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="qrDownload">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+        保存标注图
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 目标检测标注图预览弹层 -->
+<div class="modal-mask" id="yoloMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="yoloModalTitle">目标检测结果</h3>
+      <button class="modal-close" id="yoloClose">×</button>
+    </div>
+    <div class="modal-body">
+      <img id="yoloImg" src="" alt="目标检测结果">
+      <div id="yoloModalSummary" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="yoloDownload">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+        保存标注图
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认弹层 -->
+<div class="modal-mask" id="confirmMask">
+  <div class="modal confirm">
+    <div class="modal-head">
+      <h3>确认删除</h3>
+      <button class="modal-close" id="confirmClose">×</button>
+    </div>
+    <div class="modal-body">
+      确定要删除这个文件吗？删除后无法恢复。
+      <div class="sub" id="confirmName"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="confirmCancel">取消</button>
+      <button class="btn btn-danger" id="confirmOk">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></svg>
+        删除
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
