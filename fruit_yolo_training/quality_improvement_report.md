@@ -32,8 +32,9 @@
 
 - `evaluations/baseline_test_conf_0.35.json`
 - `evaluations/candidate_fulltest_test_conf_0.35.json`
-- `runs/yolov8n_fruit_20261125_202627/results.csv`
-- 候选权重：`candidates/fruit_candidate_yolov8n_20261125.pt`
+- `training_runs/candidate_results.csv`
+
+候选检查点未随发布包上传：它在独立测试集上低于原始 COCO 基线，不应作为可用的最终模型发布。
 
 ## 验收边界
 

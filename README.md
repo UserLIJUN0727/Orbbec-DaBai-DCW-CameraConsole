@@ -7,7 +7,7 @@ A Windows/Python browser console for USB camera preview, capture, image tools, o
 - `webcam_server.py`, `index.html`, `style.css`, `app.js`: local HTTP server and browser UI.
 - `orbbec_depth.py`, `OrbbecSDKConfig_v1.0.xml`: ctypes adapter and SDK configuration for Orbbec SDK v1.
 - `camera.py`, `find_camera_com.py`: camera inspection utilities.
-- `fruit_yolo_training/`, `fruit_yolo_coco_benchmark/`: reproducible evaluation/training scripts and sanitized reports. Dataset images and model weights are intentionally not included.
+- `fruit_yolo_training/`, `fruit_yolo_coco_benchmark/`: reproducible evaluation/training scripts, sanitized reports, final aggregate JSON results, and the candidate training curve. Dataset images and model weights are intentionally not included.
 - `_test_full_simulation.py`, `_test_robot_projects.py`: offline and simulation regression tests.
 
 ## Windows setup

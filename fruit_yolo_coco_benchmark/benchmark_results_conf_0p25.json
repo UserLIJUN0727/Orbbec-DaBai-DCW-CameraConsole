@@ -1,0 +1,4579 @@
+{
+  "dataset": "COCO 2017 validation split (instances_val2017.json)",
+  "dataset_source": "https://cocodataset.org/#download",
+  "annotation_file_source": "https://huggingface.co/datasets/merve/coco/resolve/main/annotations/instances_val2017.json",
+  "image_file_source": "https://huggingface.co/datasets/merve/coco/resolve/main/val2017/",
+  "model": "C:\\Users\\73887\\XiaomiMiMoProjects\\.mimo-sessions\\2026\\11\\19\\usb-python\\yolov8n.pt",
+  "model_type": "Existing Ultralytics YOLOv8n COCO-pretrained weights; no fine-tuning",
+  "evaluation": {
+    "target_classes": [
+      "apple",
+      "banana",
+      "orange"
+    ],
+    "images_per_class_seeded_sample": 30,
+    "seed": 20261125,
+    "unique_images": 82,
+    "conf_threshold": 0.25,
+    "iou_threshold": 0.5,
+    "imgsz": 640,
+    "device": "cpu",
+    "matching": "greedy one-to-one same-class box match at IoU >= threshold",
+    "hit_rate_definition": "object recall = TP / (TP + FN) against annotated target-fruit instances"
+  },
+  "sampling": {
+    "apple": {
+      "available_images": 76,
+      "sampled_images": 30
+    },
+    "banana": {
+      "available_images": 103,
+      "sampled_images": 30
+    },
+    "orange": {
+      "available_images": 85,
+      "sampled_images": 30
+    }
+  },
+  "per_class": {
+    "apple": {
+      "gt": 133,
+      "predictions": 79,
+      "tp": 33,
+      "fp": 46,
+      "fn": 100,
+      "precision": 0.4177215189873418,
+      "recall_hit_rate": 0.24812030075187969,
+      "f1": 0.3113207547169811
+    },
+    "banana": {
+      "gt": 179,
+      "predictions": 96,
+      "tp": 54,
+      "fp": 42,
+      "fn": 125,
+      "precision": 0.5625,
+      "recall_hit_rate": 0.3016759776536313,
+      "f1": 0.39272727272727276
+    },
+    "orange": {
+      "gt": 139,
+      "predictions": 119,
+      "tp": 62,
+      "fp": 57,
+      "fn": 77,
+      "precision": 0.5210084033613446,
+      "recall_hit_rate": 0.4460431654676259,
+      "f1": 0.48062015503875966
+    }
+  },
+  "overall_target_fruit": {
+    "gt": 451,
+    "predictions": 294,
+    "tp": 149,
+    "fp": 145,
+    "fn": 302,
+    "precision": 0.5068027210884354,
+    "recall_hit_rate": 0.3303769401330377,
+    "f1": 0.4
+  },
+  "timing": {
+    "inference_seconds_including_model_warmup": 11.607451299991226,
+    "mean_seconds_per_image": 0.14155428414623447
+  },
+  "image_results": [
+    {
+      "image_id": 2149,
+      "file_name": "000000002149.jpg",
+      "ground_truth": {
+        "apple": 1
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.6026,
+          "xyxy": [
+            0.0,
+            237.1,
+            250.2,
+            397.9
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5282,
+          "xyxy": [
+            335.8,
+            70.0,
+            585.7,
+            321.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2992,
+          "xyxy": [
+            0.3,
+            171.4,
+            83.9,
+            282.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2894,
+          "xyxy": [
+            77.4,
+            71.8,
+            340.1,
+            329.1
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2827,
+          "xyxy": [
+            5.8,
+            65.2,
+            631.6,
+            401.9
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 3,
+          "fn": 0
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 6614,
+      "file_name": "000000006614.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.3132,
+          "xyxy": [
+            306.7,
+            64.8,
+            483.5,
+            251.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2679,
+          "xyxy": [
+            126.0,
+            66.5,
+            309.0,
+            252.3
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 12667,
+      "file_name": "000000012667.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.9053,
+          "xyxy": [
+            282.2,
+            51.0,
+            436.0,
+            287.6
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 13004,
+      "file_name": "000000013004.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 37777,
+      "file_name": "000000037777.jpg",
+      "ground_truth": {
+        "banana": 1,
+        "orange": 5
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.4452,
+          "xyxy": [
+            231.6,
+            200.6,
+            247.9,
+            217.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4215,
+          "xyxy": [
+            228.7,
+            177.9,
+            242.6,
+            189.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3852,
+          "xyxy": [
+            204.5,
+            188.1,
+            219.6,
+            206.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.311,
+          "xyxy": [
+            216.1,
+            186.8,
+            231.9,
+            200.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2871,
+          "xyxy": [
+            217.3,
+            200.0,
+            231.8,
+            214.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2764,
+          "xyxy": [
+            202.1,
+            178.2,
+            257.8,
+            217.6
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 5,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 40471,
+      "file_name": "000000040471.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "banana": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 44260,
+      "file_name": "000000044260.jpg",
+      "ground_truth": {
+        "apple": 6
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 6
+        }
+      }
+    },
+    {
+      "image_id": 50149,
+      "file_name": "000000050149.jpg",
+      "ground_truth": {
+        "banana": 13
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7691,
+          "xyxy": [
+            403.4,
+            58.4,
+            476.4,
+            177.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.7275,
+          "xyxy": [
+            182.4,
+            38.3,
+            259.6,
+            200.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6729,
+          "xyxy": [
+            73.2,
+            191.4,
+            114.6,
+            259.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6625,
+          "xyxy": [
+            132.2,
+            187.5,
+            223.0,
+            354.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6255,
+          "xyxy": [
+            101.8,
+            36.4,
+            180.6,
+            194.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6074,
+          "xyxy": [
+            416.2,
+            165.5,
+            498.9,
+            294.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4803,
+          "xyxy": [
+            294.4,
+            168.3,
+            366.7,
+            258.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3321,
+          "xyxy": [
+            328.5,
+            52.0,
+            406.8,
+            187.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3209,
+          "xyxy": [
+            255.2,
+            43.2,
+            330.8,
+            194.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2909,
+          "xyxy": [
+            130.1,
+            279.6,
+            226.1,
+            353.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2749,
+          "xyxy": [
+            257.0,
+            40.2,
+            323.5,
+            86.7
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 7,
+          "fp": 4,
+          "fn": 6
+        }
+      }
+    },
+    {
+      "image_id": 58705,
+      "file_name": "000000058705.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.4152,
+          "xyxy": [
+            45.3,
+            191.8,
+            106.2,
+            287.2
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 60855,
+      "file_name": "000000060855.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "orange": 5
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.8432,
+          "xyxy": [
+            13.0,
+            100.8,
+            141.9,
+            228.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.8115,
+          "xyxy": [
+            327.5,
+            203.0,
+            478.7,
+            359.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.8023,
+          "xyxy": [
+            205.6,
+            188.3,
+            332.6,
+            317.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7946,
+          "xyxy": [
+            137.1,
+            106.5,
+            270.3,
+            230.5
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6798,
+          "xyxy": [
+            162.7,
+            12.6,
+            293.0,
+            124.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5918,
+          "xyxy": [
+            266.6,
+            62.5,
+            428.5,
+            221.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4175,
+          "xyxy": [
+            24.7,
+            206.7,
+            201.1,
+            382.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3263,
+          "xyxy": [
+            25.6,
+            206.7,
+            201.4,
+            382.2
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        "orange": {
+          "tp": 5,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 66231,
+      "file_name": "000000066231.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "banana": 1,
+        "orange": 2
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.4058,
+          "xyxy": [
+            580.9,
+            252.1,
+            636.1,
+            286.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3255,
+          "xyxy": [
+            572.5,
+            275.6,
+            622.1,
+            324.4
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 69356,
+      "file_name": "000000069356.jpg",
+      "ground_truth": {
+        "apple": 8,
+        "banana": 7
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.3981,
+          "xyxy": [
+            191.1,
+            284.6,
+            284.3,
+            357.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2996,
+          "xyxy": [
+            235.7,
+            258.2,
+            323.5,
+            316.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2591,
+          "xyxy": [
+            286.6,
+            337.8,
+            341.5,
+            378.1
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 7
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 6
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 78266,
+      "file_name": "000000078266.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 78959,
+      "file_name": "000000078959.jpg",
+      "ground_truth": {
+        "banana": 13
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 13
+        }
+      }
+    },
+    {
+      "image_id": 79014,
+      "file_name": "000000079014.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 104669,
+      "file_name": "000000104669.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 110999,
+      "file_name": "000000110999.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "orange": 2
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7837,
+          "xyxy": [
+            281.1,
+            457.2,
+            352.1,
+            523.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7548,
+          "xyxy": [
+            132.6,
+            388.6,
+            208.1,
+            438.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7287,
+          "xyxy": [
+            200.5,
+            439.2,
+            284.6,
+            529.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3511,
+          "xyxy": [
+            162.3,
+            366.0,
+            248.4,
+            430.3
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        "orange": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 113589,
+      "file_name": "000000113589.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7172,
+          "xyxy": [
+            366.7,
+            67.5,
+            640.0,
+            359.3
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.6818,
+          "xyxy": [
+            388.0,
+            207.6,
+            528.9,
+            275.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.6631,
+          "xyxy": [
+            398.1,
+            262.7,
+            533.0,
+            308.9
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.6353,
+          "xyxy": [
+            445.7,
+            302.1,
+            523.9,
+            441.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5354,
+          "xyxy": [
+            376.3,
+            299.2,
+            450.8,
+            450.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4269,
+          "xyxy": [
+            494.9,
+            298.0,
+            542.0,
+            395.6
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 119452,
+      "file_name": "000000119452.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "banana": 2,
+        "orange": 2
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.8875,
+          "xyxy": [
+            2.8,
+            1.2,
+            632.9,
+            474.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.8359,
+          "xyxy": [
+            492.8,
+            62.5,
+            639.5,
+            409.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.7665,
+          "xyxy": [
+            337.4,
+            1.4,
+            628.9,
+            266.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5206,
+          "xyxy": [
+            0.3,
+            183.7,
+            310.6,
+            476.4
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 2
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 128658,
+      "file_name": "000000128658.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 142620,
+      "file_name": "000000142620.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 146667,
+      "file_name": "000000146667.jpg",
+      "ground_truth": {
+        "apple": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 147740,
+      "file_name": "000000147740.jpg",
+      "ground_truth": {
+        "banana": 2
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.5063,
+          "xyxy": [
+            227.1,
+            127.0,
+            396.5,
+            291.0
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3099,
+          "xyxy": [
+            304.9,
+            126.3,
+            396.7,
+            288.0
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2721,
+          "xyxy": [
+            227.2,
+            130.6,
+            314.6,
+            272.6
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 156278,
+      "file_name": "000000156278.jpg",
+      "ground_truth": {
+        "apple": 3
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3
+        }
+      }
+    },
+    {
+      "image_id": 165351,
+      "file_name": "000000165351.jpg",
+      "ground_truth": {
+        "banana": 5
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 5
+        }
+      }
+    },
+    {
+      "image_id": 173008,
+      "file_name": "000000173008.jpg",
+      "ground_truth": {
+        "banana": 2,
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 173091,
+      "file_name": "000000173091.jpg",
+      "ground_truth": {
+        "apple": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 184791,
+      "file_name": "000000184791.jpg",
+      "ground_truth": {
+        "orange": 5
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.6405,
+          "xyxy": [
+            315.7,
+            274.3,
+            395.7,
+            343.7
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5053,
+          "xyxy": [
+            441.6,
+            252.6,
+            516.7,
+            317.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3492,
+          "xyxy": [
+            94.1,
+            222.7,
+            153.5,
+            283.0
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 185599,
+      "file_name": "000000185599.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "orange": 3
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.6607,
+          "xyxy": [
+            416.6,
+            121.2,
+            639.8,
+            473.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5948,
+          "xyxy": [
+            332.6,
+            2.3,
+            639.7,
+            250.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5488,
+          "xyxy": [
+            173.6,
+            50.4,
+            340.0,
+            228.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4938,
+          "xyxy": [
+            0.4,
+            3.8,
+            244.6,
+            465.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.418,
+          "xyxy": [
+            151.9,
+            222.4,
+            448.7,
+            476.1
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3677,
+          "xyxy": [
+            146.7,
+            221.0,
+            448.7,
+            473.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2779,
+          "xyxy": [
+            333.7,
+            1.8,
+            639.6,
+            250.5
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.276,
+          "xyxy": [
+            19.1,
+            4.5,
+            637.8,
+            471.7
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 3,
+          "fp": 3,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 189078,
+      "file_name": "000000189078.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "banana": 3,
+        "orange": 3
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.5989,
+          "xyxy": [
+            57.8,
+            46.9,
+            183.2,
+            87.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5866,
+          "xyxy": [
+            252.5,
+            120.2,
+            355.7,
+            218.5
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5109,
+          "xyxy": [
+            262.2,
+            62.7,
+            351.0,
+            133.3
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5081,
+          "xyxy": [
+            334.9,
+            8.3,
+            432.8,
+            108.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5034,
+          "xyxy": [
+            19.8,
+            66.9,
+            174.1,
+            153.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4766,
+          "xyxy": [
+            19.6,
+            66.6,
+            197.4,
+            202.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4382,
+          "xyxy": [
+            177.2,
+            47.8,
+            265.9,
+            136.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4226,
+          "xyxy": [
+            164.0,
+            149.0,
+            263.0,
+            256.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3496,
+          "xyxy": [
+            357.2,
+            80.7,
+            477.1,
+            200.0
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 3,
+          "fn": 0
+        },
+        "banana": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0
+        },
+        "orange": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 191761,
+      "file_name": "000000191761.jpg",
+      "ground_truth": {
+        "banana": 1,
+        "orange": 2
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.3929,
+          "xyxy": [
+            279.0,
+            199.4,
+            409.4,
+            276.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3697,
+          "xyxy": [
+            77.1,
+            63.8,
+            498.7,
+            301.5
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 192871,
+      "file_name": "000000192871.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "banana": 1,
+        "orange": 5
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7189,
+          "xyxy": [
+            348.4,
+            243.3,
+            506.4,
+            392.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.699,
+          "xyxy": [
+            68.8,
+            159.6,
+            197.9,
+            228.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4519,
+          "xyxy": [
+            382.3,
+            166.3,
+            548.3,
+            301.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3971,
+          "xyxy": [
+            238.1,
+            328.8,
+            400.5,
+            423.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3619,
+          "xyxy": [
+            106.7,
+            243.1,
+            513.6,
+            418.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3566,
+          "xyxy": [
+            66.7,
+            179.0,
+            518.2,
+            419.8
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 3,
+          "fp": 3,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 193926,
+      "file_name": "000000193926.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "banana": 4,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.6286,
+          "xyxy": [
+            36.3,
+            20.2,
+            281.1,
+            223.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5334,
+          "xyxy": [
+            89.0,
+            78.7,
+            153.4,
+            132.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3447,
+          "xyxy": [
+            368.6,
+            107.8,
+            607.6,
+            217.9
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2959,
+          "xyxy": [
+            24.7,
+            84.7,
+            90.1,
+            166.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2817,
+          "xyxy": [
+            103.8,
+            17.8,
+            164.7,
+            84.2
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 213935,
+      "file_name": "000000213935.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.8791,
+          "xyxy": [
+            61.1,
+            136.5,
+            337.8,
+            409.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.8583,
+          "xyxy": [
+            322.2,
+            47.6,
+            596.0,
+            320.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.8043,
+          "xyxy": [
+            87.9,
+            0.8,
+            418.5,
+            161.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.7809,
+          "xyxy": [
+            0.1,
+            26.4,
+            187.4,
+            297.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.7174,
+          "xyxy": [
+            305.5,
+            321.2,
+            580.8,
+            420.9
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.611,
+          "xyxy": [
+            554.0,
+            121.1,
+            639.7,
+            419.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5468,
+          "xyxy": [
+            409.1,
+            0.6,
+            568.5,
+            39.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4517,
+          "xyxy": [
+            0.2,
+            289.6,
+            109.0,
+            423.3
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3486,
+          "xyxy": [
+            533.0,
+            0.0,
+            639.6,
+            203.8
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 3,
+          "fp": 4,
+          "fn": 0
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 216277,
+      "file_name": "000000216277.jpg",
+      "ground_truth": {
+        "apple": 1
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.7359,
+          "xyxy": [
+            89.6,
+            127.0,
+            342.0,
+            369.7
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 217753,
+      "file_name": "000000217753.jpg",
+      "ground_truth": {
+        "apple": 9,
+        "orange": 9
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.4797,
+          "xyxy": [
+            478.5,
+            296.6,
+            639.8,
+            463.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2557,
+          "xyxy": [
+            535.5,
+            352.9,
+            596.3,
+            416.9
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        "orange": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 7
+        }
+      }
+    },
+    {
+      "image_id": 227187,
+      "file_name": "000000227187.jpg",
+      "ground_truth": {
+        "banana": 6
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.476,
+          "xyxy": [
+            313.6,
+            273.9,
+            400.5,
+            299.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3922,
+          "xyxy": [
+            144.5,
+            300.2,
+            251.8,
+            325.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.317,
+          "xyxy": [
+            219.8,
+            252.2,
+            272.8,
+            300.5
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 3
+        }
+      }
+    },
+    {
+      "image_id": 231527,
+      "file_name": "000000231527.jpg",
+      "ground_truth": {
+        "orange": 5
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.9183,
+          "xyxy": [
+            0.5,
+            362.7,
+            153.6,
+            515.7
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7733,
+          "xyxy": [
+            306.7,
+            470.3,
+            427.0,
+            639.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7511,
+          "xyxy": [
+            253.5,
+            115.1,
+            367.7,
+            231.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6865,
+          "xyxy": [
+            326.6,
+            146.2,
+            426.6,
+            274.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4005,
+          "xyxy": [
+            374.2,
+            104.2,
+            427.0,
+            157.9
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 4,
+          "fp": 1,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 236721,
+      "file_name": "000000236721.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.8063,
+          "xyxy": [
+            424.9,
+            87.4,
+            544.7,
+            169.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6719,
+          "xyxy": [
+            431.1,
+            147.0,
+            565.9,
+            205.3
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 248980,
+      "file_name": "000000248980.jpg",
+      "ground_truth": {
+        "orange": 4
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4
+        }
+      }
+    },
+    {
+      "image_id": 271471,
+      "file_name": "000000271471.jpg",
+      "ground_truth": {
+        "banana": 5
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.5754,
+          "xyxy": [
+            101.7,
+            149.8,
+            412.1,
+            328.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5007,
+          "xyxy": [
+            395.2,
+            176.3,
+            592.7,
+            244.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.363,
+          "xyxy": [
+            235.2,
+            218.9,
+            449.4,
+            305.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3608,
+          "xyxy": [
+            197.3,
+            288.3,
+            350.9,
+            346.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3583,
+          "xyxy": [
+            90.9,
+            228.2,
+            155.9,
+            302.0
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 3,
+          "fp": 2,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 272566,
+      "file_name": "000000272566.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "banana": 13
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.7062,
+          "xyxy": [
+            79.3,
+            310.3,
+            294.4,
+            406.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3785,
+          "xyxy": [
+            396.1,
+            267.9,
+            466.7,
+            310.4
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 12
+        }
+      }
+    },
+    {
+      "image_id": 273711,
+      "file_name": "000000273711.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "orange": 4
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.293,
+          "xyxy": [
+            237.0,
+            255.5,
+            270.3,
+            286.5
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 3
+        }
+      }
+    },
+    {
+      "image_id": 276434,
+      "file_name": "000000276434.jpg",
+      "ground_truth": {
+        "orange": 4
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4
+        }
+      }
+    },
+    {
+      "image_id": 290081,
+      "file_name": "000000290081.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7829,
+          "xyxy": [
+            333.6,
+            181.3,
+            609.9,
+            414.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.7692,
+          "xyxy": [
+            174.5,
+            32.3,
+            408.7,
+            333.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.746,
+          "xyxy": [
+            0.2,
+            155.9,
+            278.0,
+            391.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4086,
+          "xyxy": [
+            246.6,
+            326.3,
+            398.9,
+            428.4
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 293794,
+      "file_name": "000000293794.jpg",
+      "ground_truth": {
+        "banana": 13
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.6275,
+          "xyxy": [
+            63.5,
+            523.7,
+            175.9,
+            639.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5969,
+          "xyxy": [
+            148.4,
+            499.8,
+            240.6,
+            586.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.566,
+          "xyxy": [
+            160.4,
+            552.4,
+            240.6,
+            639.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5647,
+          "xyxy": [
+            238.5,
+            539.8,
+            339.1,
+            640.0
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5629,
+          "xyxy": [
+            379.7,
+            369.1,
+            428.0,
+            423.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5472,
+          "xyxy": [
+            119.5,
+            458.0,
+            181.9,
+            521.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4414,
+          "xyxy": [
+            313.1,
+            362.9,
+            382.4,
+            410.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4369,
+          "xyxy": [
+            0.0,
+            570.3,
+            124.8,
+            639.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3788,
+          "xyxy": [
+            208.7,
+            464.8,
+            290.6,
+            556.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3622,
+          "xyxy": [
+            260.1,
+            511.9,
+            338.4,
+            604.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3553,
+          "xyxy": [
+            373.5,
+            473.0,
+            427.6,
+            544.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3515,
+          "xyxy": [
+            235.6,
+            336.2,
+            310.9,
+            413.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3357,
+          "xyxy": [
+            230.5,
+            417.0,
+            292.2,
+            481.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3217,
+          "xyxy": [
+            347.1,
+            414.4,
+            400.5,
+            457.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3006,
+          "xyxy": [
+            0.0,
+            570.1,
+            73.8,
+            639.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2912,
+          "xyxy": [
+            64.8,
+            483.9,
+            139.5,
+            536.7
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2789,
+          "xyxy": [
+            373.4,
+            343.3,
+            420.0,
+            387.7
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 6,
+          "fp": 11,
+          "fn": 7
+        }
+      }
+    },
+    {
+      "image_id": 318114,
+      "file_name": "000000318114.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.5115,
+          "xyxy": [
+            201.7,
+            84.4,
+            303.5,
+            159.2
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 322959,
+      "file_name": "000000322959.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "banana": 2,
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 338624,
+      "file_name": "000000338624.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 349480,
+      "file_name": "000000349480.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "banana": 2,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.4356,
+          "xyxy": [
+            307.1,
+            369.0,
+            356.4,
+            408.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4145,
+          "xyxy": [
+            304.8,
+            345.5,
+            382.3,
+            407.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2926,
+          "xyxy": [
+            286.9,
+            345.5,
+            312.6,
+            374.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2566,
+          "xyxy": [
+            265.4,
+            339.0,
+            292.1,
+            370.8
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 351609,
+      "file_name": "000000351609.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7268,
+          "xyxy": [
+            259.1,
+            260.7,
+            470.4,
+            330.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5634,
+          "xyxy": [
+            192.5,
+            127.1,
+            340.5,
+            248.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3954,
+          "xyxy": [
+            315.1,
+            170.2,
+            447.3,
+            276.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3931,
+          "xyxy": [
+            76.1,
+            88.8,
+            345.3,
+            311.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3836,
+          "xyxy": [
+            107.2,
+            190.5,
+            263.9,
+            329.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2702,
+          "xyxy": [
+            16.9,
+            101.5,
+            449.6,
+            323.5
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 5,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 356428,
+      "file_name": "000000356428.jpg",
+      "ground_truth": {
+        "banana": 7
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.4104,
+          "xyxy": [
+            6.4,
+            220.6,
+            30.5,
+            264.3
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 7
+        }
+      }
+    },
+    {
+      "image_id": 357888,
+      "file_name": "000000357888.jpg",
+      "ground_truth": {
+        "apple": 4
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4
+        }
+      }
+    },
+    {
+      "image_id": 359833,
+      "file_name": "000000359833.jpg",
+      "ground_truth": {
+        "apple": 8,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.4822,
+          "xyxy": [
+            1.1,
+            133.3,
+            290.0,
+            356.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.467,
+          "xyxy": [
+            85.5,
+            415.7,
+            153.9,
+            488.1
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4251,
+          "xyxy": [
+            1.0,
+            352.4,
+            162.5,
+            637.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.36,
+          "xyxy": [
+            0.6,
+            431.3,
+            90.9,
+            537.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3337,
+          "xyxy": [
+            201.4,
+            190.6,
+            260.5,
+            244.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2977,
+          "xyxy": [
+            131.2,
+            240.1,
+            196.5,
+            303.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2923,
+          "xyxy": [
+            121.9,
+            191.3,
+            184.5,
+            247.8
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 2,
+          "fp": 5,
+          "fn": 6
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 366711,
+      "file_name": "000000366711.jpg",
+      "ground_truth": {
+        "orange": 13
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7455,
+          "xyxy": [
+            224.2,
+            290.0,
+            298.8,
+            363.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6787,
+          "xyxy": [
+            363.9,
+            234.3,
+            424.5,
+            281.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6378,
+          "xyxy": [
+            259.2,
+            355.5,
+            331.2,
+            424.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6332,
+          "xyxy": [
+            195.4,
+            351.0,
+            260.7,
+            420.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6286,
+          "xyxy": [
+            273.9,
+            247.8,
+            335.4,
+            306.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.594,
+          "xyxy": [
+            374.8,
+            275.2,
+            426.2,
+            355.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5533,
+          "xyxy": [
+            186.4,
+            284.3,
+            230.3,
+            332.3
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5333,
+          "xyxy": [
+            275.3,
+            164.3,
+            352.7,
+            236.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4808,
+          "xyxy": [
+            313.3,
+            229.2,
+            367.3,
+            297.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3598,
+          "xyxy": [
+            154.6,
+            392.0,
+            220.3,
+            454.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3309,
+          "xyxy": [
+            0.0,
+            343.0,
+            73.4,
+            434.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2508,
+          "xyxy": [
+            389.0,
+            216.2,
+            426.6,
+            260.2
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 9,
+          "fp": 3,
+          "fn": 4
+        }
+      }
+    },
+    {
+      "image_id": 369370,
+      "file_name": "000000369370.jpg",
+      "ground_truth": {
+        "orange": 2
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.4829,
+          "xyxy": [
+            181.0,
+            2.7,
+            313.4,
+            123.3
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 378515,
+      "file_name": "000000378515.jpg",
+      "ground_truth": {
+        "banana": 13
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 13
+        }
+      }
+    },
+    {
+      "image_id": 386277,
+      "file_name": "000000386277.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7628,
+          "xyxy": [
+            210.1,
+            101.8,
+            474.9,
+            372.7
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 389812,
+      "file_name": "000000389812.jpg",
+      "ground_truth": {
+        "banana": 3
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7703,
+          "xyxy": [
+            186.7,
+            313.1,
+            421.3,
+            477.1
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 406570,
+      "file_name": "000000406570.jpg",
+      "ground_truth": {
+        "apple": 1,
+        "orange": 6
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.6645,
+          "xyxy": [
+            122.8,
+            458.1,
+            310.7,
+            639.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.6116,
+          "xyxy": [
+            277.5,
+            252.3,
+            398.6,
+            388.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5791,
+          "xyxy": [
+            0.0,
+            257.3,
+            422.2,
+            638.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5508,
+          "xyxy": [
+            295.3,
+            505.9,
+            426.5,
+            639.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5456,
+          "xyxy": [
+            183.7,
+            279.9,
+            352.0,
+            424.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5011,
+          "xyxy": [
+            36.2,
+            384.7,
+            190.6,
+            488.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4887,
+          "xyxy": [
+            24.8,
+            260.7,
+            168.0,
+            394.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4796,
+          "xyxy": [
+            42.1,
+            449.9,
+            171.8,
+            612.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4455,
+          "xyxy": [
+            296.4,
+            423.3,
+            426.3,
+            545.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4383,
+          "xyxy": [
+            330.2,
+            242.5,
+            427.0,
+            311.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4187,
+          "xyxy": [
+            161.5,
+            256.0,
+            276.4,
+            360.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4002,
+          "xyxy": [
+            41.6,
+            607.7,
+            168.2,
+            639.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3836,
+          "xyxy": [
+            382.8,
+            290.4,
+            427.0,
+            373.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3801,
+          "xyxy": [
+            139.7,
+            350.8,
+            213.6,
+            439.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.331,
+          "xyxy": [
+            185.0,
+            415.0,
+            314.1,
+            491.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3118,
+          "xyxy": [
+            332.8,
+            365.5,
+            426.7,
+            431.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2749,
+          "xyxy": [
+            0.0,
+            562.2,
+            63.9,
+            640.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2745,
+          "xyxy": [
+            0.0,
+            431.8,
+            56.9,
+            572.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2706,
+          "xyxy": [
+            0.1,
+            377.6,
+            79.3,
+            446.8
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 18,
+          "fn": 0
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 6
+        }
+      }
+    },
+    {
+      "image_id": 429281,
+      "file_name": "000000429281.jpg",
+      "ground_truth": {
+        "apple": 4,
+        "banana": 2,
+        "orange": 12
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7734,
+          "xyxy": [
+            0.8,
+            107.1,
+            379.5,
+            396.0
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5579,
+          "xyxy": [
+            289.8,
+            272.6,
+            396.6,
+            387.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5554,
+          "xyxy": [
+            367.0,
+            153.8,
+            431.7,
+            263.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5529,
+          "xyxy": [
+            406.3,
+            291.6,
+            480.0,
+            388.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4048,
+          "xyxy": [
+            97.5,
+            0.1,
+            226.3,
+            39.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3972,
+          "xyxy": [
+            292.9,
+            169.9,
+            383.1,
+            259.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2926,
+          "xyxy": [
+            228.9,
+            0.1,
+            348.2,
+            44.9
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4
+        },
+        "banana": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 1
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 11
+        }
+      }
+    },
+    {
+      "image_id": 446117,
+      "file_name": "000000446117.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.8513,
+          "xyxy": [
+            254.7,
+            151.6,
+            382.4,
+            259.7
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 457262,
+      "file_name": "000000457262.jpg",
+      "ground_truth": {
+        "banana": 2
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7393,
+          "xyxy": [
+            40.0,
+            118.7,
+            463.5,
+            382.7
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 465806,
+      "file_name": "000000465806.jpg",
+      "ground_truth": {
+        "banana": 7
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.6682,
+          "xyxy": [
+            51.5,
+            214.2,
+            182.9,
+            305.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3771,
+          "xyxy": [
+            184.9,
+            220.8,
+            254.3,
+            262.6
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 6
+        }
+      }
+    },
+    {
+      "image_id": 466835,
+      "file_name": "000000466835.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.8532,
+          "xyxy": [
+            170.9,
+            32.5,
+            344.9,
+            416.7
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 474854,
+      "file_name": "000000474854.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 479596,
+      "file_name": "000000479596.jpg",
+      "ground_truth": {
+        "apple": 13,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.678,
+          "xyxy": [
+            460.4,
+            226.6,
+            519.7,
+            274.5
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.6517,
+          "xyxy": [
+            208.0,
+            277.6,
+            314.6,
+            387.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5609,
+          "xyxy": [
+            109.9,
+            236.7,
+            223.1,
+            336.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5452,
+          "xyxy": [
+            91.9,
+            315.1,
+            213.3,
+            425.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5381,
+          "xyxy": [
+            0.0,
+            198.7,
+            102.2,
+            297.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.5235,
+          "xyxy": [
+            143.9,
+            175.3,
+            233.7,
+            245.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5118,
+          "xyxy": [
+            405.9,
+            247.1,
+            475.5,
+            316.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4176,
+          "xyxy": [
+            352.5,
+            214.0,
+            425.6,
+            281.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4164,
+          "xyxy": [
+            305.4,
+            285.8,
+            395.5,
+            382.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4152,
+          "xyxy": [
+            1.6,
+            66.3,
+            633.1,
+            425.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3871,
+          "xyxy": [
+            0.2,
+            294.2,
+            96.4,
+            386.1
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3519,
+          "xyxy": [
+            296.8,
+            151.2,
+            350.9,
+            199.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3242,
+          "xyxy": [
+            218.1,
+            156.2,
+            278.3,
+            210.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3185,
+          "xyxy": [
+            86.2,
+            132.0,
+            161.3,
+            197.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2978,
+          "xyxy": [
+            438.5,
+            197.0,
+            496.5,
+            250.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.294,
+          "xyxy": [
+            215.6,
+            178.5,
+            256.4,
+            216.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2649,
+          "xyxy": [
+            10.7,
+            165.2,
+            80.5,
+            208.5
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2584,
+          "xyxy": [
+            436.7,
+            311.0,
+            499.6,
+            368.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2574,
+          "xyxy": [
+            0.2,
+            369.9,
+            118.8,
+            427.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2544,
+          "xyxy": [
+            351.0,
+            365.2,
+            483.6,
+            426.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2525,
+          "xyxy": [
+            290.2,
+            239.7,
+            364.9,
+            288.2
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 6,
+          "fp": 0,
+          "fn": 7
+        },
+        "orange": {
+          "tp": 1,
+          "fp": 14,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 480275,
+      "file_name": "000000480275.jpg",
+      "ground_truth": {
+        "banana": 10
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.2946,
+          "xyxy": [
+            490.9,
+            106.6,
+            568.9,
+            165.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2783,
+          "xyxy": [
+            361.5,
+            117.6,
+            402.3,
+            142.0
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 8
+        }
+      }
+    },
+    {
+      "image_id": 484351,
+      "file_name": "000000484351.jpg",
+      "ground_truth": {
+        "apple": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 491216,
+      "file_name": "000000491216.jpg",
+      "ground_truth": {
+        "banana": 2
+      },
+      "predictions": [],
+      "matched": {
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        }
+      }
+    },
+    {
+      "image_id": 498919,
+      "file_name": "000000498919.jpg",
+      "ground_truth": {
+        "apple": 13,
+        "orange": 10
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.4589,
+          "xyxy": [
+            348.8,
+            266.3,
+            432.0,
+            323.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4409,
+          "xyxy": [
+            64.2,
+            28.2,
+            188.4,
+            105.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3825,
+          "xyxy": [
+            379.3,
+            163.1,
+            431.4,
+            208.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3702,
+          "xyxy": [
+            286.4,
+            77.3,
+            326.5,
+            114.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3675,
+          "xyxy": [
+            148.4,
+            169.8,
+            430.6,
+            321.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3669,
+          "xyxy": [
+            270.8,
+            67.1,
+            306.2,
+            95.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3523,
+          "xyxy": [
+            404.8,
+            175.4,
+            431.9,
+            218.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3498,
+          "xyxy": [
+            348.3,
+            190.1,
+            406.1,
+            236.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3416,
+          "xyxy": [
+            117.7,
+            152.7,
+            165.4,
+            188.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.322,
+          "xyxy": [
+            250.9,
+            92.5,
+            288.2,
+            117.7
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3133,
+          "xyxy": [
+            278.1,
+            190.5,
+            330.9,
+            240.8
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3034,
+          "xyxy": [
+            393.8,
+            225.3,
+            431.8,
+            287.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2895,
+          "xyxy": [
+            331.0,
+            178.5,
+            380.4,
+            214.9
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2883,
+          "xyxy": [
+            89.4,
+            132.4,
+            134.1,
+            178.7
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2844,
+          "xyxy": [
+            308.6,
+            224.1,
+            369.0,
+            281.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2663,
+          "xyxy": [
+            325.8,
+            240.3,
+            394.5,
+            309.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2661,
+          "xyxy": [
+            369.6,
+            209.2,
+            430.5,
+            258.1
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2543,
+          "xyxy": [
+            291.4,
+            204.4,
+            351.0,
+            262.2
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 13
+        },
+        "orange": {
+          "tp": 6,
+          "fp": 12,
+          "fn": 4
+        }
+      }
+    },
+    {
+      "image_id": 509131,
+      "file_name": "000000509131.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "banana": 4,
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.5537,
+          "xyxy": [
+            371.7,
+            117.3,
+            484.9,
+            284.0
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.452,
+          "xyxy": [
+            164.2,
+            291.2,
+            434.8,
+            421.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4081,
+          "xyxy": [
+            325.8,
+            291.0,
+            400.0,
+            362.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3768,
+          "xyxy": [
+            276.4,
+            314.2,
+            353.9,
+            385.7
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.3357,
+          "xyxy": [
+            254.6,
+            377.2,
+            346.0,
+            423.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.31,
+          "xyxy": [
+            226.7,
+            306.6,
+            289.2,
+            373.4
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2531,
+          "xyxy": [
+            335.5,
+            353.3,
+            427.1,
+            423.7
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 3,
+          "fp": 1,
+          "fn": 0
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 4
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 537506,
+      "file_name": "000000537506.jpg",
+      "ground_truth": {
+        "apple": 2
+      },
+      "predictions": [
+        {
+          "class": "apple",
+          "confidence": 0.7104,
+          "xyxy": [
+            377.6,
+            220.3,
+            515.7,
+            342.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4252,
+          "xyxy": [
+            334.2,
+            197.7,
+            545.9,
+            357.7
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3792,
+          "xyxy": [
+            440.4,
+            196.3,
+            546.5,
+            258.8
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3531,
+          "xyxy": [
+            440.1,
+            196.6,
+            546.4,
+            291.7
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 540502,
+      "file_name": "000000540502.jpg",
+      "ground_truth": {
+        "apple": 2,
+        "orange": 3
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3
+        }
+      }
+    },
+    {
+      "image_id": 548506,
+      "file_name": "000000548506.jpg",
+      "ground_truth": {
+        "apple": 5,
+        "banana": 3
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7525,
+          "xyxy": [
+            349.3,
+            0.9,
+            582.3,
+            300.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.7115,
+          "xyxy": [
+            0.1,
+            187.7,
+            257.5,
+            419.6
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.7068,
+          "xyxy": [
+            58.5,
+            0.1,
+            362.9,
+            221.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.649,
+          "xyxy": [
+            443.4,
+            0.3,
+            639.6,
+            216.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6386,
+          "xyxy": [
+            484.9,
+            204.6,
+            639.6,
+            380.4
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.6193,
+          "xyxy": [
+            0.3,
+            55.8,
+            72.6,
+            234.5
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.5715,
+          "xyxy": [
+            240.0,
+            211.6,
+            532.1,
+            420.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.4081,
+          "xyxy": [
+            83.7,
+            172.8,
+            299.3,
+            320.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3678,
+          "xyxy": [
+            3.2,
+            3.2,
+            628.9,
+            418.9
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 4,
+          "fp": 1,
+          "fn": 1
+        },
+        "banana": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 550471,
+      "file_name": "000000550471.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.7587,
+          "xyxy": [
+            258.8,
+            182.4,
+            587.7,
+            382.8
+          ]
+        }
+      ],
+      "matched": {
+        "orange": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 550714,
+      "file_name": "000000550714.jpg",
+      "ground_truth": {
+        "banana": 1
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.7229,
+          "xyxy": [
+            255.7,
+            188.8,
+            639.3,
+            476.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6015,
+          "xyxy": [
+            0.1,
+            237.7,
+            279.5,
+            420.0
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    {
+      "image_id": 560256,
+      "file_name": "000000560256.jpg",
+      "ground_truth": {
+        "apple": 12,
+        "banana": 6,
+        "orange": 9
+      },
+      "predictions": [
+        {
+          "class": "orange",
+          "confidence": 0.5842,
+          "xyxy": [
+            480.4,
+            328.3,
+            639.7,
+            464.3
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5248,
+          "xyxy": [
+            122.3,
+            324.2,
+            292.5,
+            468.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4241,
+          "xyxy": [
+            583.5,
+            359.0,
+            639.9,
+            417.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4124,
+          "xyxy": [
+            368.9,
+            265.8,
+            568.0,
+            397.6
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4106,
+          "xyxy": [
+            525.7,
+            360.3,
+            583.0,
+            424.0
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.4067,
+          "xyxy": [
+            554.0,
+            327.0,
+            611.9,
+            375.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3757,
+          "xyxy": [
+            244.1,
+            236.9,
+            352.2,
+            325.2
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.3444,
+          "xyxy": [
+            388.7,
+            127.0,
+            593.4,
+            199.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3319,
+          "xyxy": [
+            288.9,
+            254.6,
+            383.6,
+            366.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3128,
+          "xyxy": [
+            374.4,
+            240.1,
+            468.0,
+            315.2
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2809,
+          "xyxy": [
+            147.3,
+            323.7,
+            292.3,
+            419.1
+          ]
+        },
+        {
+          "class": "apple",
+          "confidence": 0.2664,
+          "xyxy": [
+            171.4,
+            64.0,
+            276.4,
+            154.2
+          ]
+        },
+        {
+          "class": "orange",
+          "confidence": 0.2631,
+          "xyxy": [
+            485.3,
+            394.3,
+            546.9,
+            450.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2579,
+          "xyxy": [
+            244.4,
+            237.3,
+            381.0,
+            363.6
+          ]
+        }
+      ],
+      "matched": {
+        "apple": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 11
+        },
+        "banana": {
+          "tp": 2,
+          "fp": 5,
+          "fn": 4
+        },
+        "orange": {
+          "tp": 2,
+          "fp": 3,
+          "fn": 7
+        }
+      }
+    },
+    {
+      "image_id": 565045,
+      "file_name": "000000565045.jpg",
+      "ground_truth": {
+        "orange": 1
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    {
+      "image_id": 567898,
+      "file_name": "000000567898.jpg",
+      "ground_truth": {
+        "orange": 3
+      },
+      "predictions": [],
+      "matched": {
+        "orange": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3
+        }
+      }
+    },
+    {
+      "image_id": 571718,
+      "file_name": "000000571718.jpg",
+      "ground_truth": {
+        "banana": 13
+      },
+      "predictions": [
+        {
+          "class": "banana",
+          "confidence": 0.6531,
+          "xyxy": [
+            111.5,
+            205.9,
+            191.4,
+            283.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.6196,
+          "xyxy": [
+            226.3,
+            159.5,
+            303.0,
+            233.8
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.5897,
+          "xyxy": [
+            195.2,
+            177.2,
+            247.2,
+            241.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4609,
+          "xyxy": [
+            63.7,
+            250.9,
+            151.1,
+            302.4
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4455,
+          "xyxy": [
+            166.5,
+            199.8,
+            226.7,
+            272.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.4149,
+          "xyxy": [
+            5.8,
+            239.1,
+            78.7,
+            287.1
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3703,
+          "xyxy": [
+            15.2,
+            200.9,
+            107.1,
+            253.6
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3616,
+          "xyxy": [
+            247.6,
+            226.9,
+            330.7,
+            296.0
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3254,
+          "xyxy": [
+            205.0,
+            238.0,
+            258.4,
+            300.5
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.3102,
+          "xyxy": [
+            13.9,
+            216.0,
+            98.2,
+            251.9
+          ]
+        },
+        {
+          "class": "banana",
+          "confidence": 0.2638,
+          "xyxy": [
+            376.9,
+            196.4,
+            427.3,
+            234.0
+          ]
+        }
+      ],
+      "matched": {
+        "banana": {
+          "tp": 8,
+          "fp": 3,
+          "fn": 5
+        }
+      }
+    },
+    {
+      "image_id": 575970,
+      "file_name": "000000575970.jpg",
+      "ground_truth": {
+        "apple": 3,
+        "banana": 1
+      },
+      "predictions": [],
+      "matched": {
+        "apple": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        "banana": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "This is a deterministic sampled benchmark, not a full COCO evaluation or COCO mAP.",
+    "Only apple, banana, and orange ground-truth objects and predictions are scored.",
+    "This measures the existing COCO-pretrained model; it does not train or improve weights.",
+    "COCO benchmark performance does not guarantee accuracy on the user's camera, lighting, fruit varieties, or robot workspace."
+  ]
+}
