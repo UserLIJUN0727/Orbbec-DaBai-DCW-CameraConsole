@@ -866,14 +866,19 @@
     }
     const cs = (s.color_size || []).join('×') || '—';
     const ds = (s.depth_size || []).join('×') || '—';
+    const depthHasValues = s.depth_data_valid === true;
     info.innerHTML = `
       <div class="row">彩色: <span style="color:var(--ink);margin-left:6px">${cs}</span></div>
       <div class="row">深度: <span style="color:var(--ink);margin-left:6px">${ds}</span></div>
       <div class="row">帧率: <span style="color:var(--ink);margin-left:6px">${s.depth_fps || 0} fps</span></div>
+      <div class="row">格式: <span style="color:var(--ink);margin-left:6px">${s.depth_format ?? '—'}</span></div>
       <div class="row">比例: <span style="color:var(--ink);margin-left:6px">${s.depth_scale ?? '—'}</span></div>
-      <div class="row">帧数: <span style="color:var(--ink);margin-left:6px">${s.depth_frames ?? 0}</span></div>`;
+      <div class="row">帧数: <span style="color:var(--ink);margin-left:6px">${s.depth_frames ?? 0}</span></div>
+      <div class="row" style="color:${depthHasValues ? 'var(--accent)' : (depthActive ? 'var(--warn)' : 'var(--muted)')}">${depthHasValues ? '深度值有效，可测距' : (depthActive ? 'SDK有帧，但没有有效深度值；当前不可测距' : '等待启动')}</div>`;
     $('depthSummary').textContent = depthActive
-      ? `深度运行中 · ${s.depth_fps || 0} fps · 点击画面测距`
+      ? (depthHasValues
+        ? `深度运行中 · ${s.depth_fps || 0} fps · 点击画面测距`
+        : '深度管线已启动，但暂无有效距离值')
       : 'Orbbec DaBai DCW · 结构光测距';
     if (s.depth_error) {
       info.innerHTML += `<div class="row" style="color:var(--danger)">${escapeHtml(s.depth_error)}</div>`;
@@ -904,7 +909,10 @@
         return;
       }
       renderDepthStatus({ ...s, mode: !depthActive });
-      toast(!depthActive ? '深度模式已开启' : '深度模式已关闭，RGB 已恢复');
+      const noDepthData = !depthActive && s.depth_running && !s.depth_data_valid;
+      toast(!depthActive
+        ? (noDepthData ? '深度管线已启动，但无有效测距值' : '深度模式已开启')
+        : '深度模式已关闭，RGB 已恢复', noDepthData);
       // /stream 会自动切换深度/RGB 源, 保持实时流不断
       $('stream').src = '/stream?t=' + Date.now();
       refreshDepthImg();

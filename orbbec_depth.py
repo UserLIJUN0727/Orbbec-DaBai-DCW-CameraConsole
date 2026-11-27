@@ -61,6 +61,12 @@ class OrbbecDepth:
         self.height = 0
         self.depth_width = 0
         self.depth_height = 0
+        # SDK 帧元数据：用于区分“有帧但无有效深度”和解码/格式不匹配。
+        self.depth_format = None
+        self.depth_bytes = 0
+        self.depth_raw_nonzero = 0
+        self.depth_raw_min = None
+        self.depth_raw_max = None
         self.error = ""
         self.started_at = 0.0
 
@@ -257,7 +263,7 @@ class OrbbecDepth:
                     continue
 
                 c_raw, c_fmt, c_w, c_h = self._read_raw(color_f)
-                d_raw, _d_fmt, d_w, d_h = self._read_raw(depth_f)
+                d_raw, d_fmt, d_w, d_h = self._read_raw(depth_f)
                 scale = float(self._call(
                     "读深度比例",
                     self.lib.ob_depth_frame_get_value_scale, depth_f))
@@ -273,12 +279,22 @@ class OrbbecDepth:
                     color = cv2.cvtColor(c_raw.reshape(c_h, c_w, 2), cv2.COLOR_YUV2BGR_YUY2)
                 else:
                     color = None
-                # 深度帧 -> uint16 (mm 需乘 scale)
-                vals = d_raw.view(np.uint16)
+                # DaBai DCW 在 SDK v1 中返回 Y11；样本以 16-bit little-endian
+                # 容器保存，只有低 11 位有效。拒绝未知格式/短帧，避免伪测距。
+                if d_fmt not in (OB_FORMAT_Y11, OB_FORMAT_Y16, OB_FORMAT_Z16):
+                    raise OrbbecError(f"不支持的深度帧格式: {d_fmt}")
+                if d_raw.size % 2:
+                    raise OrbbecError(f"深度帧字节数不是 16-bit 对齐: {d_raw.size}")
+                vals = d_raw.view("<u2")
                 need = d_w * d_h
                 if vals.size < need:
-                    continue
+                    raise OrbbecError(
+                        f"深度帧数据不足: format={d_fmt}, bytes={d_raw.size}, "
+                        f"pixels={d_w}x{d_h} (需要 {need * 2} bytes)"
+                    )
                 depth = vals[:need].reshape(d_h, d_w)
+                if d_fmt == OB_FORMAT_Y11:
+                    depth = depth & 0x07FF
 
                 if color is None:
                     continue
@@ -289,6 +305,11 @@ class OrbbecDepth:
                     self.depth_scale = scale
                     self.width, self.height = c_w, c_h
                     self.depth_width, self.depth_height = d_w, d_h
+                    self.depth_format = d_fmt
+                    self.depth_bytes = int(d_raw.size)
+                    self.depth_raw_nonzero = int(np.count_nonzero(depth))
+                    self.depth_raw_min = int(depth.min()) if depth.size else None
+                    self.depth_raw_max = int(depth.max()) if depth.size else None
                     self.frame_count += 1
                 n += 1
                 now = time.time()
@@ -419,15 +440,23 @@ class OrbbecDepth:
         if df is not None:
             import numpy as np
             valid_ratio = float((df > 0).sum()) / float(df.size) if df.size else 0.0
+        data_valid = valid_ratio > 0.0
         with self.lock:
             return {
                 "depth_running": running,
+                "depth_data_valid": data_valid,
+                "depth_health": "ok" if data_valid else ("no_valid_depth" if running else "idle"),
                 "depth_pipeline_started": self.started,
                 "depth_fps": round(self.fps, 1),
                 "depth_frames": self.frame_count,
                 "depth_scale": round(self.depth_scale, 4),
                 "color_size": [self.width, self.height],
                 "depth_size": [self.depth_width, self.depth_height],
+                "depth_format": self.depth_format,
+                "depth_bytes": self.depth_bytes,
+                "depth_raw_nonzero": self.depth_raw_nonzero,
+                "depth_raw_min": self.depth_raw_min,
+                "depth_raw_max": self.depth_raw_max,
                 "valid_ratio": round(valid_ratio, 3),
                 "depth_error": self.error,
                 "uptime": round(time.time() - self.started_at, 1)

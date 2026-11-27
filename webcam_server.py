@@ -4046,11 +4046,19 @@ def _build_diagnostics() -> dict:
             "尚未按需加载；未探测 USB、未启动 SDK 管线")
     else:
         depth = DEPTH.status()
-        add("depth", "Orbbec 深度模块",
-            "ok" if depth.get("depth_running") else "idle",
-            (f"运行中 · {depth.get('depth_fps', 0)} fps · 有效像素 "
-             f"{depth.get('valid_ratio', 0) * 100:.0f}%" if depth.get("depth_running")
-             else "已加载但未运行；诊断不会启动 SDK 管线"))
+        if depth.get("depth_running") and depth.get("depth_data_valid"):
+            add("depth", "Orbbec 深度模块", "ok",
+                f"采集正常 · {depth.get('depth_fps', 0)} fps · 有效像素 "
+                f"{depth.get('valid_ratio', 0) * 100:.0f}% · 格式 {depth.get('depth_format')}")
+        elif depth.get("depth_running"):
+            add("depth", "Orbbec 深度模块", "warn",
+                f"SDK 已收帧但没有有效深度值 · {depth.get('depth_fps', 0)} fps · "
+                f"格式 {depth.get('depth_format')} · 原始范围 "
+                f"{depth.get('depth_raw_min')}..{depth.get('depth_raw_max')} · "
+                "当前无法测距；检查 USB 连接/数据线，并用 OrbbecViewer 独立复测")
+        else:
+            add("depth", "Orbbec 深度模块", "idle",
+                "已加载但未运行；诊断不会启动 SDK 管线")
         if depth.get("depth_error"):
             add("depth_error", "最近深度错误", "error", depth["depth_error"])
 
