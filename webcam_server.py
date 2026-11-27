@@ -2370,9 +2370,14 @@ _AIR_ACTION_CN = {"match_score": "比赛+1", "arm_grasp": "抓取Z-50",
 # 目标检测 / 水果识别 (YOLOv8 · 预训练模型, 无需自备数据集)
 # ============================================================
 
-# 水果过滤支持 COCO 类别与兼容的自定义水果模型。
-# 注意：默认 COCO 权重仍只识别苹果、香蕉、橙子。
-FRUIT_CLASSES = {"banana", "apple", "orange", "grape", "pineapple", "watermelon"}
+# 水果过滤用于 COCO、自训练模型和 YOLO-World 提示词；不改变基础模型类别。
+FRUIT_CLASSES = {
+    "apple", "banana", "grape", "orange", "pineapple", "watermelon",
+    "mango", "pear", "peach", "strawberry", "blueberry", "cherry",
+    "lemon", "lime", "kiwi", "coconut", "avocado", "papaya", "plum",
+    "pomegranate", "melon", "cantaloupe", "dragon fruit", "durian",
+    "lychee", "fig",
+}
 # 常见物体中文名映射 (COCO 80 类, 常用的)
 COCO_CN = {
     "person": "人", "bicycle": "自行车", "car": "汽车", "motorcycle": "摩托车",
@@ -2390,6 +2395,13 @@ COCO_CN = {
     "spoon": "勺子", "bowl": "碗", "banana": "香蕉", "apple": "苹果",
     "sandwich": "三明治", "orange": "橙子", "grape": "葡萄",
     "pineapple": "菠萝", "watermelon": "西瓜", "broccoli": "西兰花",
+    "mango": "芒果", "pear": "梨", "peach": "桃子",
+    "strawberry": "草莓", "blueberry": "蓝莓", "cherry": "樱桃",
+    "lemon": "柠檬", "lime": "青柠", "kiwi": "猕猴桃",
+    "coconut": "椰子", "avocado": "牛油果", "papaya": "木瓜",
+    "plum": "李子", "pomegranate": "石榴", "melon": "甜瓜",
+    "cantaloupe": "哈密瓜", "dragon fruit": "火龙果", "durian": "榴莲",
+    "lychee": "荔枝", "fig": "无花果",
     "carrot": "胡萝卜", "hot dog": "热狗", "pizza": "披萨", "donut": "甜甜圈",
     "cake": "蛋糕", "chair": "椅子", "couch": "沙发", "potted plant": "盆栽",
     "bed": "床", "dining table": "餐桌", "toilet": "马桶", "tv": "电视",
@@ -2405,6 +2417,28 @@ COCO_CN = {
 def _normalize_yolo_label(value) -> str:
     """Canonicalize labels from COCO and custom checkpoints consistently."""
     return str(value).strip().casefold()
+
+
+def _parse_yolo_prompts(value) -> list[str]:
+    """Validate a comma-separated open-vocabulary prompt list."""
+    if isinstance(value, str):
+        prompts = [part.strip() for part in value.split(",") if part.strip()]
+    elif isinstance(value, (list, tuple)):
+        prompts = [str(part).strip() for part in value if str(part).strip()]
+    else:
+        raise ValueError("类别词汇必须是逗号分隔的英文类别列表")
+    unique = []
+    seen = set()
+    for prompt in prompts:
+        key = prompt.casefold()
+        if key not in seen:
+            seen.add(key)
+            unique.append(prompt)
+    if len(unique) > 50:
+        raise ValueError("单次最多设置 50 个类别，减少词汇可提升相关性和速度")
+    if any(len(prompt) > 60 for prompt in unique):
+        raise ValueError("每个类别描述最多 60 个字符")
+    return unique
 
 
 class YoloEngine:
@@ -2424,6 +2458,7 @@ class YoloEngine:
         self.elapsed_ms = 0
         self.error = ""
         self.model_name = ""
+        self.active_prompts: list[str] = []
 
     def _ensure(self):
         if self._model is not None:
@@ -2451,6 +2486,7 @@ class YoloEngine:
             with self.lock:
                 self._model = m
                 self.model_name = "yolov8n (COCO 80类)"
+                self.active_prompts = []
                 self._loading = False
             print("[YOLO] yolov8n 模型已加载 (80 类, 含香蕉/苹果/橙子)")
             return m
@@ -2461,27 +2497,40 @@ class YoloEngine:
             print(f"[ERR] {self.error}")
             return None
 
-    def load_custom_model(self, path: str) -> dict:
-        """加载自定义 YOLO 模型 (如自训练的水果模型 .pt), 扩充识别类别。"""
+    def load_custom_model(self, path: str, prompts=None) -> dict:
+        """加载本地 YOLO 权重；YOLO-World 可附带自定义开放词汇类别。"""
         from pathlib import Path
         p = Path(path)
         if not p.is_file():
             return {"ok": False, "error": f"模型文件不存在: {path}"}
         try:
+            prompt_list = _parse_yolo_prompts(prompts) if prompts else []
+        except ValueError as e:
+            return {"ok": False, "error": str(e)}
+        try:
             from ultralytics import YOLO
             import torch
             torch.set_num_threads(4)
             m = YOLO(str(p))
+            if prompt_list:
+                set_classes = getattr(m, "set_classes", None)
+                if not callable(set_classes):
+                    return {"ok": False, "error": (
+                        "当前权重不支持开放词汇类别。请加载 YOLO-World 权重（例如本地"
+                        " yolov8s-worldv2.pt）；普通 YOLO 检测权重只能识别训练时固定的类别。"
+                    )}
+                set_classes(prompt_list)
             names = getattr(m, "names", {}) or {}
             cls_list = [names[k] for k in sorted(names)] if isinstance(names, dict) else list(names)
             with self.lock:
                 self._model = m
                 self.model_name = f"{p.name} ({len(cls_list)}类)"
+                self.active_prompts = prompt_list
                 self._loading = False
                 self.error = ""
             print(f"[YOLO] 自定义模型已加载: {p.name} ({len(cls_list)} 类)")
             return {"ok": True, "model": self.model_name,
-                    "classes": cls_list[:80]}
+                    "classes": cls_list[:80], "open_vocabulary": bool(prompt_list)}
         except Exception as e:
             return {"ok": False, "error": f"自定义模型加载失败: {e}"}
 
@@ -2551,8 +2600,12 @@ class YoloEngine:
             boxes = r0.boxes
             for i in range(len(boxes)):
                 cls_id = int(boxes.cls[i].item())
-                en = _normalize_yolo_label(names.get(cls_id, str(cls_id)))
-                if only_fruit and en not in FRUIT_CLASSES:
+                raw_label = names.get(cls_id, str(cls_id))
+                en = _normalize_yolo_label(raw_label)
+                fruit_label = next((fruit for fruit in sorted(
+                    FRUIT_CLASSES, key=len, reverse=True) if fruit in en), "")
+                is_fruit = bool(fruit_label)
+                if only_fruit and not is_fruit:
                     continue
                 xyxy = boxes.xyxy[i].tolist()
                 score = float(boxes.conf[i].item())
@@ -2560,10 +2613,10 @@ class YoloEngine:
                         int(xyxy[2] - xyxy[0]), int(xyxy[3] - xyxy[1])]
                 item = {
                     "label_en": en,
-                    "label_cn": COCO_CN.get(en, en),
+                    "label_cn": COCO_CN.get(en, COCO_CN.get(fruit_label, str(raw_label))),
                     "confidence": round(score, 3),
                     "bbox": bbox,
-                    "is_fruit": en in FRUIT_CLASSES,
+                    "is_fruit": is_fruit,
                 }
                 if use_measure:
                     meas = self._measure_box(bbox)
@@ -2629,10 +2682,11 @@ class YoloEngine:
                 "yolo_loading": self._loading,
                 "yolo_error": self.error,
                 "yolo_model": self.model_name,
+                "yolo_vocabulary": list(self.active_prompts),
                 "yolo_last_count": len(self.last_results),
                 "yolo_last_ms": self.elapsed_ms,
                 "fruit_classes": sorted(FRUIT_CLASSES),
-                "note": "COCO 预训练 80 类；水果含香蕉/苹果/橙子。更多水果需自备数据集微调",
+                "note": "默认 COCO 权重是固定 80 类；本地 YOLO-World 权重可设置开放词汇类别。",
             }
 
 
@@ -4422,7 +4476,8 @@ class Handler(BaseHTTPRequestHandler):
             self._send_json(YOLO.detect_once(only_fruit=only_fruit, conf=conf))
         elif path == "/yolo/model":
             body = self._read_json_body()
-            self._send_json(YOLO.load_custom_model(str(body.get("path", ""))))
+            self._send_json(YOLO.load_custom_model(
+                str(body.get("path", "")), body.get("classes", "")))
         elif path == "/depth/start":
             self._send_json(_depth_start())
         elif path == "/depth/stop":

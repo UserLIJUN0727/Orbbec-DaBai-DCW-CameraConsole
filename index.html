@@ -677,11 +677,13 @@
       </div>
 
       <div class="color-toolbar" style="margin-top:12px">
-        <span class="k">自定义水果模型</span>
-        <input class="in-txt" type="text" id="yoloModelPath" placeholder="自训练模型 .pt 路径（如 C:\models\fruit.pt）">
-        <button class="btn" id="btnYoloLoadModel" style="padding:9px 16px;font-size:12px">加载模型</button>
+        <span class="k">模型文件</span>
+        <input class="in-txt" type="text" id="yoloModelPath" placeholder="本地 .pt 权重路径；YOLO-World 可填 yolov8s-worldv2.pt">
+        <input class="in-txt" type="text" id="yoloClassPrompts" placeholder="开放词汇类别（英文逗号分隔）：apple, bicycle, cup">
+        <button class="btn" id="btnYoloLoadModel" style="padding:9px 16px;font-size:12px">加载模型/类别</button>
         <span class="file-count" id="yoloModelName">当前: yolov8n (COCO 80类)</span>
       </div>
+      <div class="color-hint">通用识别：使用本地 YOLO-World 权重并填写类别词汇，可不重新训练地切换目标类别；普通 YOLO 权重仍只能识别训练时固定的类别。类别词汇最多 50 项，建议每次只填写当前任务需要的类别。程序不会自动下载权重。</div>
 
       <div class="yolo-live-preview" id="yoloLivePreview" aria-live="polite">
         <div class="yolo-live-preview-title">连续检测 · 最近标注帧</div>

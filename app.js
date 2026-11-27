@@ -2725,6 +2725,7 @@
   async function loadYoloModel() {
     const el = $('yoloModelPath');
     const path = (el && el.value || '').trim();
+    const classes = ($('yoloClassPrompts')?.value || '').trim();
     if (!path) { toast('请填写模型 .pt 路径', true); return; }
     const btn = $('btnYoloLoadModel');
     btn.disabled = true;
@@ -2733,7 +2734,7 @@
       const r = await fetch('/yolo/model', {
         method: 'POST', cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path }),
+        body: JSON.stringify({ path, classes }),
       });
       const d = await r.json();
       if (d.ok === false) {
@@ -2741,7 +2742,8 @@
       } else {
         toast('模型已加载: ' + d.model);
         const nm = $('yoloModelName');
-        if (nm) nm.textContent = '当前: ' + d.model;
+        if (nm) nm.textContent = '当前: ' + d.model +
+          (d.open_vocabulary ? ` · 开放词汇 ${d.classes.length} 类` : '');
       }
     } catch (e) {
       toast('模型加载失败: ' + e.message, true);

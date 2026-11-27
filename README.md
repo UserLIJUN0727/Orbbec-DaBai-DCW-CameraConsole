@@ -8,7 +8,7 @@ A Windows/Python browser console for USB camera preview, capture, image tools, o
 - `orbbec_depth.py`, `OrbbecSDKConfig_v1.0.xml`: ctypes adapter and SDK configuration for Orbbec SDK v1.
 - `camera.py`, `find_camera_com.py`: camera inspection utilities.
 - `fruit_yolo_training/`, `fruit_yolo_coco_benchmark/`: reproducible evaluation/training scripts, sanitized reports, final aggregate JSON results, and the candidate training curve. Dataset images and model weights are intentionally not included.
-- `_test_full_simulation.py`, `_test_robot_projects.py`: offline and simulation regression tests.
+- `_test_full_simulation.py`, `_test_robot_projects.py`, `_test_yolo_generalization.py`: offline and simulation regression tests, including the optional open-vocabulary adapter.
 
 ## Windows setup
 
@@ -19,7 +19,7 @@ Tested dependency versions on Windows 11 with Python 3.10.11. Python 3.11 and ot
 3. Double-click `setup.bat` once. It creates a project-local `.venv` and installs `requirements.txt`.
 4. Double-click `run.bat`. The server binds to `127.0.0.1:8000`; open <http://127.0.0.1:8000/>.
 
-The app may download the default `yolov8n.pt` checkpoint on first YOLO use. It is deliberately excluded from Git. Optional hand-landmark support needs `hand_landmarker.task`; see `models/README.md`.
+Model weights are deliberately excluded from Git. The default COCO `yolov8n.pt` must be provided locally; the app does not download it automatically. Optional hand-landmark support needs `hand_landmarker.task`; see `models/README.md`.
 
 Depth mode is available only when the matching SDK v1 DLLs, driver, and device firmware initialize correctly. This source package does not contain a driver installer or SDK binaries and does not change system drivers/firmware.
 
@@ -30,13 +30,14 @@ From the package directory, with `.venv` created:
 ```bat
 .venv\Scripts\python.exe _test_full_simulation.py
 .venv\Scripts\python.exe _test_robot_projects.py
+.venv\Scripts\python.exe _test_yolo_generalization.py
 ```
 
 These use synthetic frames and simulation state. Passing them does not prove a physical camera stream, depth frames, or robot operation.
 
 ## Fruit model notes
 
-The stock YOLOv8 COCO model recognizes apple, banana, and orange among its 80 classes. A separate experimental six-class candidate did not outperform the baseline on the held-out set and is not included. Review `fruit_yolo_training/quality_improvement_report.md` before using any model for sorting. The public fruit dataset used for experiments is CC0: <https://github.com/lightly-ai/dataset_fruits_detection>.
+The stock YOLOv8 COCO model recognizes apple, banana, and orange among its 80 classes. For other targets, the UI can load a local Ultralytics YOLO-World checkpoint and a comma-separated English vocabulary (up to 50 prompts); ordinary closed-set YOLO checkpoints cannot accept prompt classes. YOLO-World weights are not bundled or auto-downloaded, and prompt-based support does not guarantee accuracy: validate target classes on representative images before use. A separate experimental six-class fruit candidate did not outperform the baseline on the held-out set and is not included. Review `fruit_yolo_training/quality_improvement_report.md` before using any model for sorting. The public fruit dataset used for experiments is CC0: <https://github.com/lightly-ai/dataset_fruits_detection>.
 
 ## Privacy and network scope
 
