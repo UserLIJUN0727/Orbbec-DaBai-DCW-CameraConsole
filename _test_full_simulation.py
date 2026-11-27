@@ -396,11 +396,44 @@ class OfflineSimulationTests(unittest.TestCase):
 
     def test_yolo_empty_scene_inference_with_synthetic_frame(self):
         blank = np.zeros((480, 640, 3), np.uint8)
-        with patch.object(W.CAM, "get_raw", return_value=blank):
+        class EmptyResult:
+            boxes = None
+            names = {}
+
+        class FakeModel:
+            def predict(self, *_args, **_kwargs):
+                return [EmptyResult()]
+
+        with patch.object(W.CAM, "get_raw", return_value=blank), \
+                patch.object(W.YOLO, "_ensure", return_value=FakeModel()):
             result = W.YOLO.detect_once(only_fruit=False, conf=0.35)
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["count"], 0)
         self.assertTrue(W.YOLO.get_annotated_jpeg().startswith(b"\xff\xd8"))
+
+    def test_yolo_missing_weights_never_imports_downloader(self):
+        engine = W.YoloEngine()
+        with tempfile.TemporaryDirectory(prefix="orbbec_yolo_missing_") as tmp:
+            with patch.object(W, "ROOT", Path(tmp)), \
+                    patch("builtins.__import__", side_effect=AssertionError(
+                        "missing weights must not import a model downloader")) as importer:
+                self.assertIsNone(engine._ensure())
+                importer.assert_not_called()
+        self.assertIn("不存在", engine.error)
+
+    def test_qr_detector_decodes_synthetic_qr(self):
+        if not hasattr(cv2, "QRCodeEncoder_create"):
+            self.skipTest("OpenCV QR encoder is unavailable")
+        qr = cv2.QRCodeEncoder_create().encode("https://example.com/orbbec-test")
+        qr = cv2.resize(qr, (300, 300), interpolation=cv2.INTER_NEAREST)
+        frame = np.full((480, 640, 3), 255, np.uint8)
+        frame[90:390, 170:470] = cv2.cvtColor(qr, cv2.COLOR_GRAY2BGR)
+        with patch.object(W, "_current_frame", return_value=frame):
+            result = W.QrEngine().detect_once()
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["count"], 1, result)
+        self.assertEqual(result["results"][0]["text"],
+                         "https://example.com/orbbec-test")
 
     def test_custom_fruit_labels_are_case_normalized_and_supported(self):
         expected = {

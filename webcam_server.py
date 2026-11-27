@@ -2418,11 +2418,20 @@ class YoloEngine:
             if self._loading:
                 return None
             self._loading = True
+        weights = ROOT / "yolov8n.pt"
+        if not weights.is_file():
+            with self.lock:
+                self._loading = False
+                self.error = (
+                    f"本地 YOLO 权重不存在: {weights}。为避免自动下载占用磁盘，"
+                    "请手动放入模型文件后重试。"
+                )
+            return None
         try:
             from ultralytics import YOLO
             import torch
             torch.set_num_threads(4)
-            m = YOLO("yolov8n.pt")
+            m = YOLO(str(weights))
             with self.lock:
                 self._model = m
                 self.model_name = "yolov8n (COCO 80类)"
