@@ -541,8 +541,8 @@
     $('ocrBadge').style.color = n > 0 ? 'var(--accent)' : 'var(--muted)';
     $('ocrBadge').style.borderColor = n > 0 ? 'rgba(61,220,132,.45)' : 'var(--line)';
     $('ocrSummary').textContent = n > 0
-      ? `最近识别 ${n} 段 · 耗时 ${d.elapsed_ms} ms${d.only_alnum ? ' · 仅字母/数字' : ''}`
-      : '字母 / 数字 / 中文 · 点击才识别';
+      ? `最近识别 ${n} 段 · 耗时 ${d.elapsed_ms} ms${d.only_alnum ? ' · 仅字母/数字' : ''}${d.quality === 'review' ? ' · 低于 65% 的结果需复核' : ''}`
+      : (d.quality === 'no_text' ? '未识别到文字；请让文字更大、对焦清晰并避免反光' : '字母 / 数字 / 中文 · 点击才识别');
 
     const items = d.results || [];
     const list = $('ocrList');
@@ -570,7 +570,7 @@
     $('ocrModalTitle').textContent = `文字识别结果 · ${d.count} 段`;
     const texts = (d.results || []).map((x) => x.text).join('  ｜  ');
     $('ocrModalSummary').textContent =
-      `识别内容: ${texts || '无'}　｜　耗时 ${d.elapsed_ms} ms　｜　${d.only_alnum ? '仅字母/数字' : '全部文本'}`;
+      `识别内容: ${texts || '无'}　｜　耗时 ${d.elapsed_ms} ms　｜　${d.quality === 'review' ? '含低置信候选，建议复核' : d.quality === 'no_text' ? '未发现文字' : '结果可用'}　｜　${d.only_alnum ? '仅字母/数字' : '全部文本'}`;
     $('ocrMask').classList.add('show');
   }
 

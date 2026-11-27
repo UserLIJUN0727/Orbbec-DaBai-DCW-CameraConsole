@@ -1147,9 +1147,20 @@ class ColorDetector:
         # 用大核做形态学, 把碎块合并成整块 (减少噪点)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
 
-        for mask in (dark_mask, light_mask, chroma_mask):
-            self._collect(mask, hsv, frame_n, kernel, min_area, max_area,
+        for index, mask in enumerate((dark_mask, light_mask, chroma_mask)):
+            component_limit = (min(max_area, int(img_area * 0.35))
+                               if index < 2 else max_area)
+            component_min = max(min_area, int(img_area * 0.0075)) if index < 2 else min_area
+            before = len(detections)
+            self._collect(mask, hsv, frame_n, kernel, component_min, component_limit,
                           detections, stats)
+            if index < 2:
+                ih, iw = mask.shape
+                detections[before:] = [
+                    d for d in detections[before:]
+                    if not (d["bbox"][0] == 0 or d["bbox"][1] == 0 or
+                            d["bbox"][0] + d["bbox"][2] >= iw - 1 or
+                            d["bbox"][1] + d["bbox"][3] >= ih - 1)]
 
         # 同色相邻区域合并
         detections = self._merge_same_color(detections)
@@ -1556,6 +1567,29 @@ class OcrEngine:
         return any(c.isalnum() for c in text)
 
     @staticmethod
+    def _deduplicate(candidates: list[dict]) -> list[dict]:
+        """跨预处理变体按空间位置去重，重叠框只保留最高置信候选。"""
+        def overlap(a, b):
+            ax, ay, aw, ah = a
+            bx, by, bw, bh = b
+            inter = max(0, min(ax + aw, bx + bw) - max(ax, bx)) * max(
+                0, min(ay + ah, by + bh) - max(ay, by))
+            return inter / float(min(aw * ah, bw * bh) + 1e-6)
+
+        kept: list[dict] = []
+        for candidate in candidates:
+            match = next((item for item in kept
+                          if overlap(item["bbox"], candidate["bbox"]) >= 0.55), None)
+            if match is None:
+                kept.append(candidate)
+                continue
+            old_rank = (match["confidence"], len(match["text"].strip()))
+            new_rank = (candidate["confidence"], len(candidate["text"].strip()))
+            if new_rank > old_rank:
+                match.update(candidate)
+        return kept
+
+    @staticmethod
     def _fix_oi(text: str) -> str:
         """保守修正 O/0、I/1 在明显语境下的混淆。
 
@@ -1627,31 +1661,8 @@ class OcrEngine:
                     "error": self.error or "OCR 引擎不可用，请确认已安装 rapidocr-onnxruntime"}
 
         t0 = time.time()
-        merged: list[dict] = []      # 合并所有变体的检出 (取并集)
+        candidates: list[dict] = []
         tried = []
-
-        def _overlap(a, b):
-            ax, ay, aw, ah = a; bx, by, bw, bh = b
-            ix = max(0, min(ax + aw, bx + bw) - max(ax, bx))
-            iy = max(0, min(ay + ah, by + bh) - max(ay, by))
-            inter = ix * iy
-            if inter <= 0:
-                return 0.0
-            return inter / float(min(aw * ah, bw * bh) + 1e-6)
-
-        def _norm(t):
-            return t.replace(" ", "").replace("　", "").upper()
-
-        def _merge_item(new):
-            # 归一化文本相同 + 框重叠 → 合并(去重), 优先保留含空格/高置信者
-            n_new = _norm(new["text"])
-            for it in merged:
-                if _norm(it["text"]) == n_new and _overlap(it["bbox"], new["bbox"]) > 0.3:
-                    if (new["confidence"] > it["confidence"] or
-                            (" " in new["text"] and " " not in it["text"])):
-                        it.update(new)
-                    return
-            merged.append(new)
 
         try:
             for name, img in self._variants(frame):
@@ -1670,21 +1681,22 @@ class OcrEngine:
                     ys = [p[1] * sy for p in box]
                     x0, y0 = int(min(xs)), int(min(ys))
                     x1, y1 = int(max(xs)), int(max(ys))
-                    _merge_item({
+                    candidates.append({
                         "text": text,
                         "confidence": round(float(score), 3),
                         "bbox": [x0, y0, x1 - x0, y1 - y0],
                         "is_alnum": self._is_alnum(text),
                     })
                 # 至少跑满 2 个变体(原图+放大)后, 已得高置信结果才提前收尾
-                if (merged and len(tried) >= 2 and
-                        max(i["confidence"] for i in merged) >= 0.85):
+                if (candidates and len(tried) >= 2 and
+                        max(i["confidence"] for i in candidates) >= 0.95):
                     break
         except Exception as e:
             return {"ok": False, "error": f"OCR 识别失败: {e}"}
         self.elapsed_ms = int((time.time() - t0) * 1000)
         self.last_variant = "合并 " + "+".join(tried[:6])
 
+        merged = self._deduplicate(candidates)
         # 合并后按面积/置信度排序, 面积大的(整行文字)优先
         merged.sort(key=lambda d: (d["confidence"], d["bbox"][2] * d["bbox"][3]),
                     reverse=True)
@@ -1721,6 +1733,10 @@ class OcrEngine:
             "total": len(items),
             "elapsed_ms": self.elapsed_ms,
             "only_alnum": only_alnum,
+            "quality": ("no_text" if not shown else
+                        "review" if any(it["confidence"] < 0.65 for it in shown)
+                        else "ok"),
+            "review_threshold": 0.65,
             "variant": self.last_variant,
             "results": shown,
         }

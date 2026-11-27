@@ -350,6 +350,59 @@ class OfflineSimulationTests(unittest.TestCase):
         self.assertFalse(detector.is_enabled())
         self.assertFalse(detector.status()["color_error"])
 
+    def test_color_detector_rejects_full_frame_gray_background_but_keeps_color_target(self):
+        image = np.full((240, 320, 3), 145, np.uint8)
+        cv2.rectangle(image, (30, 35), (90, 95), (35, 35, 35), -1)
+        cv2.rectangle(image, (105, 70), (220, 175), (0, 0, 255), -1)
+        detector = W.ColorDetector()
+        detections, _stats = detector.analyze(image)
+        self.assertTrue(detections, "彩色目标应被检出")
+        self.assertTrue(any(d["color"] in ("红色", "深红色", "朱红色") for d in detections), detections)
+        self.assertTrue(any(d["color"] in ("黑色", "深灰色", "灰色") for d in detections), detections)
+        self.assertTrue(any(d["bbox"][2] < image.shape[1] * 0.8 for d in detections), detections)
+        self.assertFalse(any(d["area"] >= image.shape[0] * image.shape[1] * 0.025 and
+                             (d["bbox"][0] == 0 or d["bbox"][1] == 0 or
+                              d["bbox"][0] + d["bbox"][2] >= image.shape[1] - 1 or
+                              d["bbox"][1] + d["bbox"][3] >= image.shape[0] - 1)
+                             for d in detections), detections)
+
+    def test_ocr_deduplicates_different_predictions_for_same_region(self):
+        frame = np.zeros((240, 320, 3), np.uint8)
+        predictions = [("MONA", 0.72), ("MOHA", 0.83), ("MONA", 0.79),
+                       ("M0NA", 0.68), ("MONA", 0.76)]
+
+        class FakeOcr:
+            def __init__(self): self.calls = 0
+            def __call__(self, image):
+                text, score = predictions[min(self.calls, len(predictions) - 1)]
+                self.calls += 1
+                sx, sy = image.shape[1] / 320, image.shape[0] / 240
+                box = [[30*sx, 40*sy], [130*sx, 40*sy],
+                       [130*sx, 70*sy], [30*sx, 70*sy]]
+                return [(box, text, score)], None
+
+        ocr = W.OcrEngine()
+        ocr._engine = FakeOcr()
+        with patch.object(W, "_current_frame", return_value=frame):
+            result = ocr.detect_once()
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["count"], 1, result)
+        self.assertEqual(result["results"][0]["text"], "MOHA")
+        self.assertEqual(result["quality"], "ok")
+
+        class LowConfidenceOcr:
+            def __call__(self, image):
+                sx, sy = image.shape[1] / 320, image.shape[0] / 240
+                box = [[30*sx, 40*sy], [130*sx, 40*sy],
+                       [130*sx, 70*sy], [30*sx, 70*sy]]
+                return [(box, "MAYBE", 0.60)], None
+
+        ocr._engine = LowConfidenceOcr()
+        with patch.object(W, "_current_frame", return_value=frame):
+            low = ocr.detect_once()
+        self.assertEqual(low["quality"], "review")
+        self.assertEqual(low["review_threshold"], 0.65)
+
     def test_haar_detector_runs_on_synthetic_blank_frame(self):
         blank = np.zeros((240, 320, 3), np.uint8)
         with patch.object(W.CAM, "get_raw", return_value=blank):
